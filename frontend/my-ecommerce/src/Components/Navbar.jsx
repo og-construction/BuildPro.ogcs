@@ -20,6 +20,8 @@ const Navbar = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [locations, setLocations] = useState([]);
+  const [type, setType] = useState('B2C'); // Added type state
+  const [gstNumber, setGstNumber] = useState(''); // Added GST Number state
   const navigate = useNavigate();
 
 
@@ -76,6 +78,8 @@ const Navbar = () => {
     setIsOtpSent(false);
     setErrorMessage('');
     setSuccessMessage('');
+    setType('B2C'); // Reset type
+    setGstNumber(''); // Reset GST Number
   };
 
   const handleSellerButtonClick = () => {
@@ -104,7 +108,9 @@ const Navbar = () => {
   const createUser = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/user/register', { name, email, password, mobile });
+      const response = await axios.post('http://localhost:5000/api/user/register', { name, email, password, mobile,type,
+        gstNumber: type === 'B2B' ? gstNumber : undefined // Only send GST Number if B2B
+       });
       console.log('User registered:', response.data);
       setIsOtpSent(true);
     } catch (error) {
@@ -220,6 +226,20 @@ const Navbar = () => {
                   <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                   <input type="text" placeholder="Mobile" value={mobile} onChange={(e) => setMobile(e.target.value)} />
                   <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+
+                  <select value={type} onChange={(e) => setType(e.target.value)}>
+                    <option value="B2C">B2C</option>
+                    <option value="B2B">B2B</option>
+                  </select>
+                  
+                  {type === 'B2B' && (
+                    <input
+                      type="text"
+                      placeholder="GST Number"
+                      value={gstNumber}
+                      onChange={(e) => setGstNumber(e.target.value)}
+                    />
+                  )}
                   <button type="submit">Register</button>
                 </form>
                 {errorMessage && <p className="error-message">{errorMessage}</p>}

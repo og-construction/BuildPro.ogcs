@@ -53,7 +53,7 @@ const UserManagement = () => {
         });
 
         if (response.status === 401) {
-          const refreshResponse = await fetch('http://localhost:5000/api/user/refresh', {
+          const refreshResponse = await fetch('http://localhost:5000/api/admin/refresh', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ const UserManagement = () => {
     setUsers(updatedUsers);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/user/block-user/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/admin/user/block/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ const UserManagement = () => {
     setUsers(updatedUsers);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/user/unblock-user/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/admin/user/unblock/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const UserManagement = () => {
     setUsers(updatedUsers);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/user/delete-user/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/admin/user/delete/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -167,7 +167,7 @@ const UserManagement = () => {
     setUsers(updatedUsers);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/user/update-user/${updatingUser._id}`, {
+      const response = await fetch(`http://localhost:5000/api/admin/user/update/${updatingUser._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

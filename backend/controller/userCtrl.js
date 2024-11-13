@@ -12,11 +12,17 @@ const sendEmail = require("./emailCtrl");
 
 // Create User
 const createUser = asyncHandler(async (req, res) => {
-    const { name, email, mobile, password } = req.body;
+    const { name, email, mobile, password, type, gstNumber } = req.body;
 
-    if (!name || !email || !mobile || !password) {
+    // Check if all required fields are provided
+    if (!name || !email || !mobile || !password || !type) {
         res.status(400);
         throw new Error("All fields are required");
+    }
+
+    // Check for GST number if type is B2B
+    if (type === 'B2B' && !gstNumber) {
+        return res.status(400).json({ message: "GST number is required for B2B registration" });
     }
 
     const findUser = await User.findOne({ email });
@@ -25,14 +31,13 @@ const createUser = asyncHandler(async (req, res) => {
         throw new Error("User already exists");
     }
 
-    const newUser = new User({ name, email, mobile, password });
-    await newUser.save();
+    // Create the user with or without GST number based on type
+    const newUser = new User({ name, email, mobile, password, type, gstNumber: type === 'B2B' ? gstNumber : undefined });
 
-    // Generate OTP
+    // Generate OTP for verification
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     newUser.verificationOtp = otp;
     newUser.verificationExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
-
     await newUser.save();
 
     // Send OTP via email
@@ -44,13 +49,12 @@ const createUser = asyncHandler(async (req, res) => {
     };
     await sendEmail(data);
 
-    // TODO: Send OTP via SMS using your SMS service provider
-
     res.status(201).json({
         message: "User registered successfully. Please verify your email and mobile.",
         id: newUser._id,
     });
 });
+
 // OTP Verification Function
 
 const verifyOtp = asyncHandler(async (req, res) => {

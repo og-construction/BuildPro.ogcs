@@ -8,7 +8,9 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     mobile: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, default: "user" },
+    type: { type: String, enum: ['B2B', 'B2C'], default: "B2C" },
+    gstNumber: { type: String, required: function() { return this.type === 'B2B'; } },
+
     isVerified: {type: Boolean, default: false},
     verificationOtp: {type: String},
     verificationExpires: Date,
