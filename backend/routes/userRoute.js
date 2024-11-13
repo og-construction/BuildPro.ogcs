@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { createUser, loginUserCtrl, getAllUsers, updateUser, deleteUser, blockUser, unblockUser, handleRefreshToken, logout, updatePassword, forgotPasswordToken, resetPassword, verifyOtp,  } = require('../controller/userCtrl');
-const {  isAdmin, authUserMiddleware } = require('../middlewares/authMiddleware');
+const {  isAdmin, authUserMiddleware, authAdminMiddleware } = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/multer');
-const { updateProduct, deleteProduct, approveProduct } = require('../controller/sellerCtrl');
+//const { updateProduct, deleteProduct, approveProduct } = require('../controller/sellerCtrl');
 
 
 // Define the routes
@@ -18,7 +18,7 @@ router.post("/login", loginUserCtrl);
 router.get("/refresh", handleRefreshToken);
 router.get("/logout",logout)
 router.put('/update-user/:id', authUserMiddleware, updateUser); // Update user route
-//router.delete('/delete-user/:id', authUserMiddleware, isAdmin, deleteUser); // Delete user route
+router.delete('/delete-user/:id', authAdminMiddleware, deleteUser); // Delete user route
 //router.put("/block-user/:id", authUserMiddleware, isAdmin, blockUser);
 //router.put("/unblock-user/:id", authUserMiddleware, isAdmin, unblockUser);
 //router.put('/update-product/:id',authUserMiddleware,isAdmin,upload.single('image'),updateProduct)

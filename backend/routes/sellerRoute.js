@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { forgotPasswordToken, resetPassword, updatePassword, loginSellerCtrl, getAllSellers, handleRefreshToken, logout, deleteSeller, blockSeller, unblockSeller, createSeller,  verifyOtp, updateProduct, deleteProduct, getAllProducts, CreateProduct, getSellerDetails, approveProduct, getApprovedProducts, createProductWithVisibility, updateProductVisibility, getSimilarProducts, getProductsBySubcategoryId } = require('../controller/sellerCtrl');
-const { isAdmin, authSellerMiddleware, authUserMiddleware, authAdminMiddleware } = require('../middlewares/authMiddleware');
+const { forgotPasswordToken, resetPassword, updatePassword, loginSellerCtrl, getAllSellers, handleRefreshToken, logout, deleteSeller,  createSeller,  verifyOtp, updateProduct, deleteProduct, getAllProducts, CreateProduct,  createProductWithVisibility, updateProductVisibility, getSimilarProducts } = require('../controller/sellerCtrl');
+const { isAdmin, authSellerMiddleware, authAdminMiddleware } = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/multer')
 
 // Sample controller function (replace this with your actual logic)
@@ -21,9 +21,7 @@ router.get('/all-seller', authAdminMiddleware, getAllSellers); // Require auth a
 router.get("/logout",logout)
 router.get("/refresh-token", handleRefreshToken);
 router.put('/update-seller/:id', authSellerMiddleware, updatePassword); // Update user route
-router.delete('/delete-seller/:id', authAdminMiddleware, deleteSeller); // Delete user route
-router.put("/block-seller/:id", authAdminMiddleware, blockSeller);
-router.put("/unblock-seller/:id", authAdminMiddleware, unblockSeller);
+
 
 
 //------------product route---------------
@@ -35,7 +33,6 @@ router.delete('/delete-product/:id', authSellerMiddleware, deleteProduct);
 
 // For admin/user-specific routes, use authUserMiddleware and isAdmin where needed
 router.get('/all-seller', authAdminMiddleware, getAllSellers);
-router.get('/seller-details/:id', authAdminMiddleware, getSellerDetails);
 
 // Mixed routes with admin permissions and seller access
 router.put('/update-seller/:id', authAdminMiddleware, updatePassword);
@@ -48,7 +45,6 @@ router.put('/update--visibility-product',authSellerMiddleware,updateProductVisib
 // visibility product logic
 //router.post('/sell-product', authSellerMiddleware, upload.single('image'), createProductWithVisibility);
 router.get('/get-similar-products', getSimilarProducts);
-router.get('/subcategory/:subcategoryId',getProductsBySubcategoryId)
 
 
 module.exports = router;

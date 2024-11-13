@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './SimilarImages.css';
-import OgcsVideo from '../Components/Assets/ogcs.mp4';
+import OgcsVideo from '../Components/Assets/all_product';
 
 const SimilarImages = () => {
   const navigate = useNavigate();

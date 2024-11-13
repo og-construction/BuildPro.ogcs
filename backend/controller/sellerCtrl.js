@@ -525,7 +525,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     }
 
     // Ensure either the admin or the seller (product owner) can update the product
-    const isAdmin = req.user && req.user.role === 'admin'; // Check if request is from an admin
+    const isAdmin = req.admin && req.admin.role === 'admin'; // Check if request is from an admin
     const isOwner = req.seller && product.seller.equals(req.seller._id); // Check if request is from the product owner (seller)
 
     if (!isAdmin && !isOwner) {
@@ -672,7 +672,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
         return res.status(404).json({ message: "Product not found" });
     }
 
-    const isAdmin = req.user && req.user.role === 'admin';
+    const isAdmin = req.admin && req.admin.role === 'admin';
     const isOwner = req.seller && product.seller.equals(req.seller._id);
 
     // Ensure only the product owner (seller) or an admin can delete the product
@@ -716,7 +716,7 @@ const getProductDetails = asyncHandler(async (req, res) => {
     }
 
     // Assuming `req.user` is populated with role info (you need an auth middleware for this)
-    const isAdmin = req.user && req.user.role === 'admin';
+    const isAdmin = req.admin && req.admin.role === 'admin';
 
     res.status(200).json({
         ...product.toObject(),

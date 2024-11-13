@@ -1,7 +1,7 @@
 import React from 'react';
 import './Onexvideo.css';
 import MoscoImage from '../Components/Assets/mascot5.png';
-import OgcsVideo from '../Components/Assets/ogcs.mp4';
+import OgcsVideo from '../Components/Assets/all_product';
 
 const Onexvideo = () => {
   return (
@@ -10,7 +10,7 @@ const Onexvideo = () => {
       <div className='content-container'>
         <div className='video-box'>
           <video controls>
-            <source src={OgcsVideo} type="video/mp4" />
+            <source src={OgcsVideo} type="moscot5" />
             Your browser does not support the video tag.
           </video>
         </div>

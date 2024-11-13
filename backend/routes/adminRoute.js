@@ -1,5 +1,7 @@
 const express = require('express');
 const { countLoggedInUsers, createAdmin, loginAdmin, getAllAdmin, getaAdmin, deleteAdmin, blockAdmin, unblockAdmin, verifyOtp, updatePassword, resetPassword, handleRefreshToken, generateRefreshToken } = require('../controller/adminCtrl');
+const upload = require('../middlewares/multer');
+
 const {
     getAllUsers,
     updateUser,
@@ -8,7 +10,7 @@ const {
     unblockUser,
 } = require('../controller/userCtrl'); // Import the user controller functions
 const {  isAdmin, authUserMiddleware, authAdminMiddleware } = require('../middlewares/authMiddleware');
-const { approveProduct } = require('../controller/sellerCtrl');
+const { approveProduct, deleteSeller, blockSeller, unblockSeller, getSellerDetails, getProductsBySubcategoryId, deleteProduct, updateProduct } = require('../controller/sellerCtrl');
 
 const router = express.Router();
 
@@ -37,12 +39,17 @@ router.post('/generate-refresh-token',generateRefreshToken)
 
 //-----------seller
 router.put('/update-seller/:id', authAdminMiddleware, updatePassword); // Update user route
-
+router.delete('/delete-seller/:id', authAdminMiddleware, deleteSeller); // Delete user route
+router.put("/block-seller/:id", authAdminMiddleware, blockSeller);
+router.put("/unblock-seller/:id", authAdminMiddleware, unblockSeller);
+router.get('/seller-details/:id', authAdminMiddleware, getSellerDetails);
 
 
 //---------------Product Route-------------------
 router.put('/approve-product/:id', authAdminMiddleware, approveProduct);
-
+router.get('/subcategory/:subcategoryId',getProductsBySubcategoryId)
+router.put('/update-product/:id',authAdminMiddleware,upload.single('image'),updateProduct)
+router.delete('/delete-product/:id', authAdminMiddleware, deleteProduct);
 
 
 

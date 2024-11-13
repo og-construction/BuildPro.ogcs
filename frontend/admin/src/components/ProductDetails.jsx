@@ -80,7 +80,7 @@ const ProductDetails = () => {
         const confirmed = window.confirm("Are you sure you want to delete this product?");
         if (confirmed) {
             try {
-                const response = await fetch(`http://localhost:5000/api/user/delete-product/${productId}`, {
+                const response = await fetch(`http://localhost:5000/api/admin/delete-product/${productId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`,

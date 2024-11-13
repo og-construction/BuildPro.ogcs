@@ -44,7 +44,7 @@ const UserManagement = () => {
       }
 
       try {
-        const response = await fetch('http://localhost:5000/api/user/all-users', {
+        const response = await fetch('http://localhost:5000/api/admin/user/all-users', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
