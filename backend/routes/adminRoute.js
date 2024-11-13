@@ -20,8 +20,6 @@ router.put('/user/update/:id',authAdminMiddleware,  updateUser); // Update user
 router.delete('/user/delete/:id', authAdminMiddleware,deleteUser); // Delete user
 router.put('/user/block/:id', authAdminMiddleware, blockUser); // Block user
 router.put('/user/unblock/:id', authAdminMiddleware, unblockUser); // Unblock user
-
-
 router.get('/totalUsers', countLoggedInUsers); // Count logged-in users
 router.post('/create-admin',createAdmin)//-----------create admin
 router.post('/login',loginAdmin)//---------------login
