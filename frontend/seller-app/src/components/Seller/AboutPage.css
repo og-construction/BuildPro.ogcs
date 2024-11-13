@@ -1,0 +1,54 @@
+.about-page {
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background for contrast */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    max-width: 800px; /* Limit width for readability */
+    margin: auto; /* Center align */
+  }
+  
+  .about-page-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333; /* Dark text color */
+    font-size: 2em; /* Increase header size */
+  }
+  
+  h4 {
+    margin-top: 20px; /* Space above section headers */
+    color: #2c3e50; /* Darker color for section headers */
+    border-bottom: 2px solid #3498db; /* Underline for headers */
+    padding-bottom: 5px; /* Padding below the header */
+  }
+  
+  .service-charges-list,
+  .visibility-tiers-list,
+  .visibility-explanation {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+  }
+  
+  .service-charges-list li,
+  .visibility-tiers-list li,
+  .visibility-explanation li {
+    background-color: #fff; /* White background for list items */
+    padding: 15px; /* Padding around list items */
+    margin: 10px 0; /* Space between list items */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth hover effect */
+    cursor: pointer; /* Pointer cursor for clickable items */
+  }
+  
+  .service-charges-list li:hover,
+  .visibility-tiers-list li:hover,
+  .visibility-explanation li:hover {
+    background-color: #e6f7ff; /* Light blue on hover */
+  }
+  
+  .operational-details {
+    background-color: #f1f1f1; /* Light grey background */
+    padding: 15px; /* Padding inside the box */
+    border-radius: 5px; /* Rounded corners */
+    margin: 10px 0; /* Space above and below */
+  }
+  

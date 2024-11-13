@@ -1,0 +1,107 @@
+/* Styling for the Sales by Product table */
+.sales-by-product {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sales-by-product h3 {
+  font-size: 1.6em;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sales-by-product table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.sales-by-product table th,
+.sales-by-product table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.sales-by-product table th {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+.sales-by-product table tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.sales-by-product table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Styling for the Product Details modal */
+.product-details {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.product-details h4 {
+  margin-top: 0;
+  font-size: 1.4em;
+  color: #4CAF50;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.product-details p {
+  margin: 10px 0;
+  line-height: 1.4;
+}
+
+.product-details p strong {
+  color: #555;
+}
+
+.product-details button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  color: white;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.product-details button:hover {
+  background-color: #45A049;
+}
+
+/* Fade-in animation for the modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

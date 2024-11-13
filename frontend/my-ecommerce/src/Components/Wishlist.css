@@ -1,0 +1,109 @@
+.wishlist-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  h1 {
+    font-size: 2.5rem;  
+    font-weight: bold;  
+    text-align: center;  
+    color: #333;         
+    padding: 10px 0;     
+    border-bottom: 2px solid #e0e0e0; 
+    margin-bottom: 20px;  
+  }
+  
+  .wishlist-items {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .wishlist-item {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .wishlist-item-image {
+    max-width: 150px;
+    width: 150px;
+    margin-right: 20px;
+  }
+  
+  .wishlist-item-details {
+    flex-grow: 1;
+  }
+  
+  .wishlist-price {
+    font-weight: bold;
+    color:#28a745;
+    font-size: 1.2rem;
+  }
+  
+  .wishlist-actions {
+    margin-top: 10px;
+  }
+  
+  .wishlist-actions button {
+    margin-right: 10px;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .wishlist-actions button:hover {
+    background-color: #0056b3;
+  }
+  /* Button styles for wishlist items */
+.wishlist-item button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Style for Add to Cart button */
+.wishlist-item button:nth-child(1) { /* First button, assumes it appears first */
+  background-color: #4CAF50; /* Green background */
+  color: white;
+}
+
+.wishlist-item button:nth-child(1):hover {
+  background-color: #45a049;
+  transform: scale(1.05); /* Slight enlarge on hover */
+}
+
+/* Style for Delete button */
+.wishlist-item button:nth-child(2) { /* Second button, assumes it appears second */
+  background-color: #f44336; /* Red background */
+  color: white;
+}
+
+.wishlist-item button:nth-child(2):hover {
+  background-color: #d32f2f;
+  transform: scale(1.05); /* Slight enlarge on hover */
+}
+
+/* Optional: Add subtle shadow effect for a modern look */
+.wishlist-item button {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.wishlist-item button:active {
+  transform: scale(0.95); /* Scale down slightly when clicked */
+}
+
+  

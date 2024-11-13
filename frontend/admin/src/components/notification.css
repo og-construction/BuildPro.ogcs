@@ -1,0 +1,28 @@
+/* notification.css */
+
+.Toastify__toast-container {
+    width: 100%;  
+    display: flex;
+    justify-content: center;  
+    align-items: center;  
+    position: fixed;
+    top: 50%;  
+    transform: translateY(-50%);  
+    z-index: 10000;  
+}
+
+.Toastify__toast {
+    max-width: 400px; 
+    font-size: 16px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.custom-toast {
+    background-color: #243ed1 !important; 
+    color: #ffffff !important;
+}
+
+.custom-toast .Toastify__progress-bar {
+    background-color: #ee04cf;
+}
