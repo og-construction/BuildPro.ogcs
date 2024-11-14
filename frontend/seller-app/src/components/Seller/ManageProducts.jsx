@@ -3,6 +3,8 @@ import AddProductForm from './AddProductForm';
 import axios from 'axios';
 
 const ManageProducts = () => {
+  const [specifications, setSpecifications] = useState([]); // Manage specifications state here
+
   const [products, setProducts] = useState([{
     name: '',
     description: '',
@@ -13,6 +15,8 @@ const ManageProducts = () => {
     category: '', 
     subcategory: '', 
     image: null, // New field to store the selected image file
+    specifications: [], // Include specifications in submission
+
   }]);
   
   const [categories, setCategories] = useState([]);
@@ -58,26 +62,25 @@ const ManageProducts = () => {
       category: selectedCategory._id, 
       subcategory: selectedSubcategory._id,
       image: null, // Initialize image field
+      specifications: [], // Include specifications in submission
+
     }]);
   };
-
   const handleSubmit = () => {
     const token = localStorage.getItem("token");
     const incompleteProducts = products.filter(product => !product.quantity);
     if (incompleteProducts.length > 0) {
-        alert('Please ensure all product quantities are filled.');
-        return;
+      alert('Please ensure all product quantities are filled.');
+      return;
     }
-    
-    // Map through products to ensure each has the category and subcategory ID before submission
+  
     const productsToSubmit = products.map((product) => ({
       ...product,
-      quantity: Number(product.quantity) || 0, // Converts quantity to a number, defaults to 0 if empty
-
-      category: selectedCategory._id, // Ensure category ID is assigned
-      subcategory: selectedSubcategory._id // Ensure subcategory ID is assigned
+      quantity: Number(product.quantity) || 0,
+      category: selectedCategory._id,
+      subcategory: selectedSubcategory._id,
     }));
-
+  
     Promise.all(
       productsToSubmit.map((product) => {
         const formData = new FormData();
@@ -90,12 +93,17 @@ const ManageProducts = () => {
         formData.append("category", selectedCategory._id);
         formData.append("subcategory", selectedSubcategory._id);
         formData.append("image", product.image); // Append the file
-        console.log("Submitting Product Data:", product);
-
-        return axios.post('http://localhost:5000/api/seller/sell-product', product, {
+  
+        // Append each specification as individual key-value pairs
+        product.specifications.forEach((spec, index) => {
+          formData.append(`specifications[${index}][key]`, spec.key);
+          formData.append(`specifications[${index}][value]`, spec.value);
+        });
+  
+        return axios.post('http://localhost:5000/api/seller/sell-product', formData, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",// Set content type
+            "Content-Type": "multipart/form-data",
           },
         });
       })
@@ -112,7 +120,8 @@ const ManageProducts = () => {
           saleMode: 'Sale By Seller',
           category: selectedCategory._id,
           subcategory: selectedSubcategory._id,
-          image: null, // Reset the image field
+          image: null,
+          specifications: [],
         }]);
       })
       .catch(async (error) => {
@@ -134,6 +143,7 @@ const ManageProducts = () => {
         }
       });
   };
+  
 
   return (
     <div>
@@ -210,7 +220,12 @@ const ManageProducts = () => {
               }}
               selectedCategory={selectedCategory._id} 
               selectedSubcategory={selectedSubcategory._id} 
-             
+
+              specifications={specifications}
+              setSpecifications={(value)=>{
+                const updatedProducts = [index].specifications = value;
+                setSpecifications(updatedProducts)
+              }}
             
             />
           

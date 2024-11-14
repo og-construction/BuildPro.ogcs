@@ -147,37 +147,93 @@ const ProductDetails = () => {
                     )}
                 </div>
                 <div className="product-info">
-                    {isEditing ? (
-                        <>
-                            <input name="name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Product Name" />
-                            <input name="price" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} placeholder="Price" />
-                            <input name="size" value={formData.size} onChange={(e) => setFormData({ ...formData, size: e.target.value })} placeholder="Size" />
-                            <input name="quantity" value={formData.quantity} onChange={(e) => setFormData({ ...formData, quantity: e.target.value })} placeholder="Quantity" />
-                            <textarea name="description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Description" />
-                            <textarea name="specifications" value={formData.specifications} onChange={(e) => setFormData({ ...formData, specifications: e.target.value })} placeholder="Specifications" />
-                            <input type="file" name="image" onChange={(e) => setImageFile(e.target.files[0])} />
-                            <button onClick={handleUpdate}>Save Changes</button>
-                        </>
-                    ) : (
-                        <>
-                            <p><strong>Description:</strong> {product.description}</p>
-                            <p><strong>Price:</strong> ₹{product.price}</p>
-                            <p><strong>Size:</strong> {product.size}</p>
-                            <p><strong>Quantity:</strong> {product.quantity}</p>
-                            <p><strong>Specifications:</strong> {product.specifications || 'N/A'}</p>
-                            <p><strong>Added on:</strong> {new Date(product.createdAt).toLocaleDateString()}</p>
-                            <p><strong>Approved:</strong> {product.approved ? "Yes" : "No"}</p>
+    {isEditing ? (
+        <>
+            <input
+                name="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Product Name"
+            />
+            <input
+                name="price"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                placeholder="Price"
+            />
+            <input
+                name="size"
+                value={formData.size}
+                onChange={(e) => setFormData({ ...formData, size: e.target.value })}
+                placeholder="Size"
+            />
+            <input
+                name="quantity"
+                value={formData.quantity}
+                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                placeholder="Quantity"
+            />
+            <textarea
+                name="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Description"
+            />
+            <div>
+                <h4>Specifications</h4>
+                {formData.specifications.map((spec, index) => (
+                    <div key={index}>
+                        <input
+                            type="text"
+                            placeholder="Key"
+                            value={spec.key}
+                            onChange={(e) => {
+                                const newSpecs = [...formData.specifications];
+                                newSpecs[index].key = e.target.value;
+                                setFormData({ ...formData, specifications: newSpecs });
+                            }}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Value"
+                            value={spec.value}
+                            onChange={(e) => {
+                                const newSpecs = [...formData.specifications];
+                                newSpecs[index].value = e.target.value;
+                                setFormData({ ...formData, specifications: newSpecs });
+                            }}
+                        />
+                    </div>
+                ))}
+            </div>
+            <input type="file" name="image" onChange={(e) => setImageFile(e.target.files[0])} />
+            <button onClick={handleUpdate}>Save Changes</button>
+        </>
+    ) : (
+        <>
+            <p><strong>Description:</strong> {product.description}</p>
+            <p><strong>Price:</strong> ₹{product.price}</p>
+            <p><strong>Size:</strong> {product.size}</p>
+            <p><strong>Quantity:</strong> {product.quantity}</p>
+            <p><strong>Specifications:</strong></p>
+            <ul>
+                {product.specifications.map((spec, index) => (
+                    <li key={index}>{spec.key}: {spec.value}</li>
+                ))}
+            </ul>
+            <p><strong>Added on:</strong> {new Date(product.createdAt).toLocaleDateString()}</p>
+            <p><strong>Approved:</strong> {product.approved ? "Yes" : "No"}</p>
 
-                            {/* Display Approve section based on approval status */}
-                            {!product.approved && (
-                                <div>
-                                    <p>Approve this product?</p>
-                                    <button onClick={handleApprove} className="approve-button">Approve</button>
-                                </div>
-                            )}
-                        </>
-                    )}
+            {!product.approved && (
+                <div>
+                    <p>Approve this product?</p>
+                    <button onClick={handleApprove} className="approve-button">Approve</button>
                 </div>
+            )}
+        </>
+    )}
+</div>
+
             </div>
             <div className="product-actions">
                 <button onClick={handleEditToggle}>{isEditing ? 'Cancel' : 'Edit Product'}</button>

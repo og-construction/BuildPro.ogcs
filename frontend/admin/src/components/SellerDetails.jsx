@@ -57,7 +57,7 @@ const SellerDetails = () => {
     const handleBlockSeller = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await fetch(`http://localhost:5000/api/seller/block-seller/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/admin/block-seller/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -78,7 +78,7 @@ const SellerDetails = () => {
     const handleUnblockSeller = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await fetch(`http://localhost:5000/api/seller/unblock-seller/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/admin/unblock-seller/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

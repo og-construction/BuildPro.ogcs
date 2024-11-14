@@ -1,8 +1,11 @@
-// controllers/cartController.js
 const Cart = require('../models/CartModel');
+const { validateMongodbId } = require('./CategoryCtrl');
 
+// Add items to cart
 exports.addToCart = async (req, res) => {
-  const { userId, items } = req.body; // Use items from the request body
+  const { userId, items } = req.body;
+  validateMongodbId(userId);
+
   try {
     const cart = await Cart.findOne({ userId });
     if (cart) {
@@ -10,9 +13,9 @@ exports.addToCart = async (req, res) => {
       items.forEach(({ productId, quantity }) => {
         const itemIndex = cart.items.findIndex(item => item.productId.equals(productId));
         if (itemIndex > -1) {
-          cart.items[itemIndex].quantity += quantity; // Update existing item quantity
+          cart.items[itemIndex].quantity += quantity;
         } else {
-          cart.items.push({ productId, quantity }); // Add new item to cart
+          cart.items.push({ productId, quantity });
         }
       });
       await cart.save();
@@ -29,14 +32,28 @@ exports.addToCart = async (req, res) => {
 
 // Get cart for a specific user
 exports.getCart = async (req, res) => {
-  const { userId } = req.params; // Get userId from request parameters
+  const { userId } = req.params;
+  validateMongodbId(userId);
+
   try {
-    const cart = await Cart.findOne({ userId }).populate('items.productId'); // Populate productId to get full product details
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
-    }
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
+    if (!cart) return res.status(404).json({ message: 'Cart not found' });
     res.status(200).json(cart);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching cart', error });
+  }
+};
+
+// Delete a user's cart
+exports.deleteCart = async (req, res) => {
+  const { userId } = req.params;
+  validateMongodbId(userId);
+
+  try {
+    const cart = await Cart.findOneAndDelete({ userId });
+    if (!cart) return res.status(404).json({ message: 'Cart not found' });
+    res.status(200).json({ message: 'Cart deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting cart', error });
   }
 };
