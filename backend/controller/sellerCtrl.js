@@ -357,12 +357,12 @@ const CreateProduct = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Invalid product details or unauthorized request." });
     }
 
-    try {
-        const image = req.file ? `/uploads/images/${req.file.filename}` : '';
-        if (!image) {
+    //try {
+       // const image = req.file ? `/uploads/images/${req.file.filename}` : '';
+      //  if (!image) {
           //  console.error("Image file is required");
-            return res.status(400).json({ message: "Image file is required" });
-        }
+       //     return res.status(400).json({ message: "Image file is required" });
+       // }
 
         // Correctly defining and saving `newProduct`
         const newProduct = new Product({
@@ -375,7 +375,7 @@ const CreateProduct = asyncHandler(async (req, res) => {
             category,
             subcategory: subcategory || null,
             specifications,
-            image,
+        //    image,
             slug: slugify(name)
         });
 
@@ -402,10 +402,10 @@ const CreateProduct = asyncHandler(async (req, res) => {
             message: "Product created successfully. Waiting for admin approval.",
             product: newProduct,
         });
-    } catch (error) {
-        console.error("Error creating product:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
+  //  } catch (error) {
+   //     console.error("Error creating product:", error);
+   //     res.status(500).json({ message: "Internal Server Error" });
+   // }
 });
 
 const getAllProducts = asyncHandler(async (req, res) => {
@@ -511,53 +511,81 @@ const getAllProducts = asyncHandler(async (req, res) => {
 });
 
 */
-
-
-
-
 const updateProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    // Find the product by ID
-    const product = await Product.findById(id);
-    if (!product) {
-        return res.status(404).json({ message: "Product not found" });
+    try {
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        const isAdmin = req.admin && req.admin.role === 'admin';
+        const isOwner = req.seller && product.seller.equals(req.seller._id);
+
+        if (!isAdmin && !isOwner) {
+            return res.status(403).json({ message: "Not authorized to update this product" });
+        }
+
+        // Parse or validate specifications
+        if (req.body.specifications) {
+            let specifications = req.body.specifications;
+
+            // Check if specifications is a string and parse it
+            if (typeof specifications === 'string') {
+                try {
+                    specifications = JSON.parse(specifications);
+                } catch (error) {
+                    console.error("Error parsing specifications:", error.message);
+                    return res.status(400).json({ message: "Invalid specifications format" });
+                }
+            }
+
+            // Validate specifications is an array and has valid keys and values
+            if (!Array.isArray(specifications)) {
+                return res.status(400).json({ message: "Specifications must be an array" });
+            }
+
+            const isValid = specifications.every(
+                (spec) =>
+                    typeof spec.key === 'string' &&
+                    typeof spec.value === 'string' &&
+                    spec.key.trim() !== '' &&
+                    spec.value.trim() !== ''
+            );
+
+            if (!isValid) {
+                return res.status(400).json({ message: "Each specification must have a valid 'key' and 'value'" });
+            }
+
+            product.specifications = specifications;
+        }
+
+        // Update other fields
+        product.name = req.body.name || product.name;
+        product.description = req.body.description || product.description;
+        product.price = req.body.price || product.price;
+        product.size = req.body.size || product.size;
+        product.quantity = req.body.quantity || product.quantity;
+
+        if (req.file) {
+            product.image = `/uploads/images/${req.file.filename}`;
+        }
+
+        // Unapprove the product if not updated by admin
+        if (!isAdmin) {
+            product.approved = false;
+        }
+
+        const updatedProduct = await product.save();
+        res.status(200).json({
+            message: isAdmin ? "Product updated successfully" : "Product updated and pending admin approval",
+            product: updatedProduct,
+        });
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
-
-    // Ensure either the admin or the seller (product owner) can update the product
-    const isAdmin = req.admin && req.admin.role === 'admin'; // Check if request is from an admin
-    const isOwner = req.seller && product.seller.equals(req.seller._id); // Check if request is from the product owner (seller)
-
-    if (!isAdmin && !isOwner) {
-        return res.status(403).json({ message: "Not authorized to update this product" });
-    }
-
-    // Update fields if provided in the request
-    product.name = req.body.name || product.name;
-    product.description = req.body.description || product.description;
-    product.price = req.body.price || product.price;
-    product.size = req.body.size || product.size;
-    product.quantity = req.body.quantity || product.quantity;
-    product.specifications = req.body.specifications || product.specifications;
-
-    // Check if an image file was provided
-    if (req.file) {
-        product.image = `/uploads/images/${req.file.filename}`;
-    } else if (!product.image) {
-        // If no new image was provided and product has no image, return an error
-        return res.status(400).json({ message: "Image is required" });
-    }
-
-    // If the update is from a seller, mark it as needing admin approval
-    if (!isAdmin) {
-        product.approved = false;
-    }
-
-    const updatedProduct = await product.save();
-    res.status(200).json({ 
-        message: isAdmin ? "Product updated successfully" : "Product updated successfully and is pending admin approval", 
-        product: updatedProduct 
-    });
 });
 
 

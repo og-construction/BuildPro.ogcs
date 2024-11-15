@@ -11,7 +11,7 @@ const ProductSchema = new mongoose.Schema({
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
     subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'SubCategory' },
     seller: { type: mongoose.Schema.Types.ObjectId, ref: 'seller', required: true },
-    image: { type: String, required:true },
+    //image: { type: String, required:true },
       // ...other fields
       visibilityLevel: {
         type: String,
