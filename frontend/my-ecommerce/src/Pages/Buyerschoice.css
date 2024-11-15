@@ -21,12 +21,25 @@
 
 .items-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-auto-rows: auto;
+    gap: 20px;
+    max-height: 400px; /* Adjust height for scroll area */
+    overflow-y: auto; /* Add vertical scroll for extra items */
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .item-box {
     text-align: center;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background-color: #fff;
 }
 
 .item-box img {
@@ -55,4 +68,17 @@
 .see-more:hover {
     color: #C7511F;
     text-decoration: underline;
+}
+
+.item-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.subcategory-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }

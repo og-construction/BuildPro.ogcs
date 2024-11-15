@@ -23,7 +23,7 @@ const Buyerschoice = () => {
                                 subcategories: subcategoriesResponse.data
                             };
                         } catch (subError) {
-                            console.error(`Error fetching subcategories for category ${category._id}:`, subError);
+                          //  console.error(`Error fetching subcategories for category ${category._id}:`, subError);
                             return { ...category, subcategories: [] }; // fallback to empty array if subcategories not found
                         }
                     })
