@@ -1,4 +1,5 @@
 import React from 'react';
+import { IoMdCloseCircleOutline } from 'react-icons/io';
 import './TermsModal.css';
 
 const TermsModal = ({ isOpen, onClose }) => {
@@ -67,11 +68,14 @@ const TermsModal = ({ isOpen, onClose }) => {
 
           <TermsSection title="Dispute Resolution">
             <ol>
-              <li></li>
+              <li>Disputes will be resolved as per BuildPro OGCS’s standard dispute resolution process.</li>
             </ol>
           </TermsSection>
 
-          <button className="close-modal" onClick={onClose}>Close</button>
+          {/* Replace Close button text with the cross icon */}
+          <div className="close-modal" onClick={onClose}>
+            <IoMdCloseCircleOutline color='black' className='close-icon' fontSize={24}/>
+          </div>
         </div>
       </div>
     </div>

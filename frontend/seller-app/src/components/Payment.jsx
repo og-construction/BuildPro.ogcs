@@ -207,7 +207,7 @@ const PaymentPage = () => {
           )}
 
           <p>Total Amount Payable: INR 10000.00</p>
-          <button type="submit">Make Payment</button>
+          <button type="submit" className="payment-btn">Make Payment</button>
         </form>
       </div>
            {/* Modal for Thank You Message */}

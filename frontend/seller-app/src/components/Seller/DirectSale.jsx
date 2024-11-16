@@ -95,7 +95,6 @@ const DirectSale = () => {
         <li>Timely Delivery: Compare delivery times to select suppliers that align with your project schedule.</li>
       </ul>
 
-      {isExpanded && (
         <>
           <p>This platform saves time and effort by providing all the essential data at your fingertips, making procurement more efficient and informed.</p>
           <h4>Service Charges:</h4>
@@ -114,12 +113,6 @@ const DirectSale = () => {
             <li><strong>4X Visibility:</strong> Maximum visibility, ensuring top placement in all search results.</li>
           </ol>
         </>
-      )}
-
-      {/* Show More / Show Less button */}
-      <button onClick={toggleContent} className="toggle-button">
-        {isExpanded ? 'Show Less' : 'Show More'}
-      </button>
     </div>
   );
 
@@ -128,130 +121,6 @@ const DirectSale = () => {
       <h1>Direct Sale Page</h1>
       <div className="content-box">
         {commonContent}
-      </div>
-
-       
-      <div className="registration-form">
-        <h3>Register and Payment</h3>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">First Name:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="lastName">Last Name:</label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="companyName">Company Name:</label>
-            <input
-              type="text"
-              id="companyName"
-              name="companyName"
-              value={formData.companyName}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="phoneNo">Phone No:</label>
-            <input
-              type="text"
-              id="phoneNo"
-              name="phoneNo"
-              value={formData.phoneNo}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          {/* Visibility Selection */}
-          <div className="payment-options">
-            <label>
-              1X Visibility: ₹60
-              <input
-                type="radio"
-                name="visibility"
-                value="1X Visibility"
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              2X Visibility: ₹100
-              <input
-                type="radio"
-                name="visibility"
-                value="2X Visibility"
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              3X Visibility: ₹150
-              <input
-                type="radio"
-                name="visibility"
-                value="3X Visibility"
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              4X Visibility: ₹200
-              <input
-                type="radio"
-                name="visibility"
-                value="4X Visibility"
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-          </div>
-
-          <div className="terms-section">
-            <h4>Terms and Conditions</h4>
-            <p>
-              By proceeding with the payment, you agree to our terms and conditions, including:
-            </p>
-            <ul>
-              <li>Service charges are payable upfront and commence upon verification.</li>
-              <li>Suppliers must update product data and comply with regulatory standards.</li>
-              <li>No refunds after the first month unless the product is discontinued.</li>
-              <li>BuildPro OGCS reserves the right to suspend non-compliant advertisements.</li>
-              <li>Suppliers are responsible for product quality and legal standards.</li>
-              <li>Separate terms apply for fulfillment services by BuildPro OGCS.</li>
-            </ul>
-            <label>
-              <input
-                type="checkbox"
-                checked={termsAccepted}
-                onChange={handleTermsChange}
-                required
-              />
-              I accept the Terms and Conditions
-            </label>
-          </div>
-
-          <button type="submit" className="submit-button" disabled={!termsAccepted}>
-            Pay ₹{price}
-          </button>
-        </form>
       </div>
     </div>
   );

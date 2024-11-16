@@ -13,7 +13,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
   }
@@ -161,5 +160,6 @@ body {
   
   .terms-box:hover {
     background-color: #eaeaea;  
+    color: black;
   }
   

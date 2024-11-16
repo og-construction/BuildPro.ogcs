@@ -46,7 +46,7 @@ const VerifyOtp = () => {
           />
         </div>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
-        <button type="submit" onClick={handlePaymentSubmit}>Verify OTP</button>
+        <button type="submit" className='otp-btn' onClick={handlePaymentSubmit}>Verify OTP</button>
       </form>
     </div>
   );

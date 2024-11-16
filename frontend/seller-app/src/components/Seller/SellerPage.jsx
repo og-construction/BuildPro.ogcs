@@ -10,13 +10,15 @@ import ManageProducts from './ManageProducts';
 
 const SellerPage = () => {
   const [currentPage, setCurrentPage] = useState('Graph');
+  const [collapsed, setCollapsed] = useState(false);
+
 
   return (
     <div className="seller-dashboard">
-      <Sidebar setCurrentPage={setCurrentPage} currentPage={currentPage} />
-
+      <Sidebar setCurrentPage={setCurrentPage} currentPage={currentPage} collapsed={collapsed}/>
+      
       <div className="main-content">
-        <Header currentPage={currentPage} />
+        <Header currentPage={currentPage} setCollapsed={setCollapsed} collapsed={collapsed}/>
 
         {currentPage === 'Graph' && <Graph />}
         {currentPage === 'Product History' && <ProductHistory />}

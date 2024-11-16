@@ -79,7 +79,7 @@
   width: 30%;
 }
 
-button[type="submit"] {
+.payment-btn {
   background-color: green;
   color: white;
   padding: 10px 20px;
