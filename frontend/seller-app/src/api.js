@@ -5,6 +5,7 @@ export const createSeller = async (data) => {
   return await axios.post(`${API_URL}/register`, data);
 };
 
+
 export const verifyOtp = async (data) => {
   return await axios.post(`${API_URL}/verify-otp`, data);  
 };
