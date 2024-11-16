@@ -1,0 +1,122 @@
+/* ManageProducts.module.css */
+
+/* Overall container */
+.manage-products-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+/* Category container */
+.category-list {
+  margin-bottom: 15px;
+}
+
+.category-list h3 {
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+.category-list p {
+  font-size: 1em;
+  color: #333;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f4f4f4;
+  transition: background-color 0.3s ease;
+}
+
+.category-list p:hover {
+  background-color: #e0e0e0;
+}
+
+/* Subcategory dropdown */
+.subcategory-list {
+  margin-top: 20px;
+}
+
+.subcategory-list h3 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.subcategory-list select {
+  padding: 10px;
+  font-size: 1em;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.subcategory-list select:hover {
+  background-color: #f4f4f4;
+}
+
+/* Radio button section */
+.radio-buttons {
+  margin-top: 20px;
+}
+
+.radio-buttons label {
+  font-size: 1em;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.radio-buttons input[type="radio"] {
+  margin-right: 5px;
+}
+
+/* Add Product Form */
+.AddProduct {
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
+.AddProduct h3 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.AddProduct button {
+  padding: 12px 20px;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 5px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.AddProduct button:hover {
+  background-color: #45A049;
+}
+
+/* Submit All Products Button */
+.add-product-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.add-product-btn:hover {
+  background-color: #45A049;
+}

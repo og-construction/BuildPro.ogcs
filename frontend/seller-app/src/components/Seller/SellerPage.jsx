@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './SellerPage.css';
+//import './SellerPage.css';
+import Style from "../Style/SellerPage.module.css";
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Graph from './Graph';
@@ -12,10 +13,10 @@ const SellerPage = () => {
   const [currentPage, setCurrentPage] = useState('Graph');
 
   return (
-    <div className="seller-dashboard">
+    <div className={Style["seller-dashboard"]}>
       <Sidebar setCurrentPage={setCurrentPage} currentPage={currentPage} />
 
-      <div className="main-content">
+      <div className={Style["main-content"]}>
         <Header currentPage={currentPage} />
 
         {currentPage === 'Graph' && <Graph />}
