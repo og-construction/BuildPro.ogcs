@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './productDetails.css';
 
 const ProductDetails = () => {
   const { productId } = useParams(); // Fetch productId from route params
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState([]);
   const [error, setError] = useState('');
+
+  const userId = localStorage.getItem("userId"); // Assume userId is stored in localStorage
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -43,6 +46,33 @@ const ProductDetails = () => {
       fetchProductDetails();
     }
   }, [productId]);
+
+  const handleAddToWishlist = async () => {
+    try {
+      await axios.post(`http://localhost:5000/api/wishlist/add`, {
+        userId,
+        productId,
+      });
+      alert('Product added to wishlist');
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      alert('Failed to add to wishlist');
+    }
+  };
+
+  const handleAddToCart = async () => {
+    try {
+      await axios.post(`http://localhost:5000/api/cart/add-to-cart`, {
+        userId,
+        items: [{ productId, quantity: 1 }],
+      });
+      alert(`${product.name} added to cart`);
+      navigate('/cart');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add to cart');
+    }
+  };
 
   const generateComparison = (similarProduct) => {
     if (!product || !product.specifications?.length || !similarProduct.specifications?.length) {
@@ -86,6 +116,14 @@ const ProductDetails = () => {
               </p>
               <p className="product-size">Size: {product.size}</p>
               <p className="product-description">{product.description}</p>
+              <div className="action-buttons">
+                <button className="wishlist-button" onClick={handleAddToWishlist}>
+                  Add to Wishlist
+                </button>
+                <button className="cart-button" onClick={handleAddToCart}>
+                  Add to Cart
+                </button>
+              </div>
             </div>
           </div>
           <div className="product-specifications-container">
