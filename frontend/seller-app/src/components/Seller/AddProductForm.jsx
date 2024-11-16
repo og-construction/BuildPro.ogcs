@@ -1,4 +1,6 @@
 import React from 'react';
+import Style from "../Style/AddProductForm.module.css";
+
 
 const AddProductForm = ({
   productName,
@@ -20,7 +22,7 @@ const AddProductForm = ({
   //setImage // New function to handle image upload
 }) => {
   return (
-    <div>
+    <div className={Style.addProductForm}>
       <input
         type="text"
         value={productName}
@@ -65,8 +67,8 @@ const AddProductForm = ({
 
 
       <div>
-        <p>Category: {selectedCategory._id}</p>
-        <p>Subcategory: {selectedSubcategory._id}</p>
+        <p>Category: {selectedCategory?._id}</p>
+        <p>Subcategory: {selectedSubcategory?._id}</p>
       </div>
     </div>
   );

@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { verifyOtp } from '../api';  
-import './VerifyOtp.css';
+import Style from "./Style/VerifyOtp.module.css";
+//import './VerifyOtp.css';
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
@@ -32,10 +33,10 @@ const VerifyOtp = () => {
   }
   
   return (
-    <div className="verify-otp-container">
+    <div className={Style["verify-otp-container"]}>
       <h2>Verify OTP</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
+        <div className={Style["form-group"]}>
           <label htmlFor="otp">Enter OTP</label>
           <input
             type="text"
@@ -45,8 +46,8 @@ const VerifyOtp = () => {
             required
           />
         </div>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-        <button type="submit" className='otp-btn' onClick={handlePaymentSubmit}>Verify OTP</button>
+        {errorMessage && <p className={Style["error-message"]}>{errorMessage}</p>}
+     <button type="submit" className={Style["btn_submit"]} onClick={handlePaymentSubmit}>Verify OTP</button>
       </form>
     </div>
   );

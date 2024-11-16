@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AddProductForm from './AddProductForm';
 import axios from 'axios';
+import Style from "../Style/ManageProducts.module.css";
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([{
@@ -10,15 +11,17 @@ const ManageProducts = () => {
     size: '',
     quantity: '',
     saleMode: 'Sale By Seller',
-    category: '', 
-    subcategory: '', 
+    category: '',
+    subcategory: '',
     image: null, // New field to store the selected image file
   }]);
-  
+
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [selectedSubcategoryOption, setSelectedSubcategoryOption] = useState('');
+  // const [isPopupOpen, setIsPopupOpen] = useState(false); 
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/category/get-all')
@@ -42,6 +45,12 @@ const ManageProducts = () => {
       });
   };
 
+  const handleSubcategoryChange = (event) => {
+    setSelectedSubcategory(event.target.value);
+    setSelectedSubcategoryOption(''); // Reset radio button selection
+  };
+
+
   const handleAddProduct = () => {
     if (!selectedCategory || !selectedSubcategory) {
       alert('Please select both a category and subcategory.');
@@ -55,20 +64,21 @@ const ManageProducts = () => {
       size: '',
       quantity: '',
       saleMode: 'Sale By Seller',
-      category: selectedCategory._id, 
+      category: selectedCategory._id,
       subcategory: selectedSubcategory._id,
       image: null, // Initialize image field
     }]);
+
   };
 
   const handleSubmit = () => {
     const token = localStorage.getItem("token");
     const incompleteProducts = products.filter(product => !product.quantity);
     if (incompleteProducts.length > 0) {
-        alert('Please ensure all product quantities are filled.');
-        return;
+      alert('Please ensure all product quantities are filled.');
+      return;
     }
-    
+
     // Map through products to ensure each has the category and subcategory ID before submission
     const productsToSubmit = products.map((product) => ({
       ...product,
@@ -136,31 +146,57 @@ const ManageProducts = () => {
   };
 
   return (
-    <div>
-      <h2>Manage Products</h2>
-      
-      <h3>Select Category</h3>
-      <div className="category-list">
+    <div className={Style['manage-products-container']}>
+      <h2>Add Products</h2>
+
+      <div className={Style['category-list']}>
+        <h3>Select Category</h3>
+
         {categories.map((category) => (
-          <button key={category._id} onClick={() => handleCategoryClick(category)}>
+          <button key={category._id}
+            className={selectedCategory._id === category._id ? 'selected' : ''}
+            onClick={() => handleCategoryClick(category)}>
+
             {category.name}
           </button>
         ))}
       </div>
 
       {selectedCategory && (
-        <div className="subcategory-list">
-          <h3>Subcategories for {selectedCategory.name}</h3>
+        <div className={Style['subcategory-list']}>
+          <h3>Select Subcategory</h3>
+          <select value={selectedSubcategory._id || ''} onChange={handleSubcategoryChange}>
+            <option value="">Select a subcategory</option>
+            {subcategories.map((subcategory) => (
+              <option key={subcategory._id} value={subcategory._id}>{subcategory.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Radio Buttons for Subcategory Option */}
+      {selectedSubcategory && (
+        <div className={Style['radio-buttons']}>
+          <h3>Choose Option</h3>
           {subcategories.map((subcategory) => (
-            <button key={subcategory._id} onClick={() => setSelectedSubcategory(subcategory)}>
-              {subcategory.name}
-            </button>
+            <div key={subcategory._id}>
+              <input
+                type="radio"
+                id={subcategory._id}
+                name="subcategory"
+                value={subcategory._id}
+                checked={selectedSubcategoryOption === subcategory._id}
+                onChange={() => setSelectedSubcategoryOption(subcategory._id)}
+              />
+              <label htmlFor={subcategory._id}>{subcategory.name}</label>
+            </div>
           ))}
         </div>
       )}
 
+
       {selectedCategory && selectedSubcategory && (
-        <div>
+        <div className={Style["AddProduct"]}>
           <h3>Add New Product</h3>
           {products.map((product, index) => (
             <AddProductForm
@@ -195,7 +231,7 @@ const ManageProducts = () => {
                 updatedProducts[index].quantity = value; // Update correctly
                 setProducts(updatedProducts);
               }}
-              
+
               saleMode={product.saleMode}
               setSaleMode={(value) => {
                 const updatedProducts = [...products];
@@ -208,16 +244,31 @@ const ManageProducts = () => {
                 updatedProducts[index].image = file;
                 setProducts(updatedProducts);
               }}
-              selectedCategory={selectedCategory._id} 
-              selectedSubcategory={selectedSubcategory._id} 
-             
-            
+              selectedCategory={selectedCategory._id}
+              selectedSubcategory={selectedSubcategory._id}
+
+
             />
-          
+
           ))}
 
-          <button onClick={handleAddProduct}>Add More Product</button>
-          <button onClick={handleSubmit}>Submit All Products</button>
+          <button onClick={handleAddProduct} className={Style['add-product-btn']}>Add New Product</button>
+
+          {/* Product Form Popup */}
+          {/* {isPopupOpen && (
+        <div className={Style.overlay}>
+          <div className={Style['product-form-popup']}>
+            <h3>Add Product</h3>
+            <AddProductForm 
+              product={products[products.length - 1]}
+              setProduct={setProducts}
+            />
+            <button onClick={() => setIsPopupOpen(false)} className="close-btn">Close</button>
+          </div>
+        </div>
+      )}  */}
+
+          <button onClick={handleSubmit} className={Style['add-product-btn']}>Submit All Products</button>
         </div>
       )}
     </div>

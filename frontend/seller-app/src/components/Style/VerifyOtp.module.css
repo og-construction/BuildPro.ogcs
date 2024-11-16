@@ -1,3 +1,4 @@
+/*VerifyOtp.module.css */
 .verify-otp-container {
     display: flex;
     flex-direction: column;
@@ -47,7 +48,7 @@
     margin-top: 10px;
   }
   
-  .otp-btn {
+  .btn_submit {
     width: 100%;
     padding: 10px;
     background-color: #0069d9;
@@ -60,6 +61,6 @@
     transition: background-color 0.3s;
   }
   
-  button:hover {
+  .btn_submit:hover {
     background-color: #0053ba;
   }
