@@ -4,6 +4,7 @@
     justify-content: space-around;
     padding: 20px;
     background-color: #f2f2f2;
+    overflow-x: hidden; /* Removes horizontal scroll */
 }
 
 .category-box {
@@ -34,7 +35,6 @@
 
 .item-box {
     text-align: center;
-    text-align: center;
     padding: 10px;
     border: 1px solid #eee;
     border-radius: 8px;
@@ -44,8 +44,8 @@
 
 .item-box img {
     width: 100%;
-    height: 120px;
-    object-fit: cover;
+    height: auto; /* Adjust height proportionally */
+    object-fit: contain; /* Ensures the full image is visible */
 }
 
 .item-box p {
@@ -77,8 +77,8 @@
 
 .subcategory-image {
     width: 100%;
-    height: 150px;
-    object-fit: cover;
+    height: auto; /* Adjust height proportionally */
+    object-fit: contain; /* Ensures the full image is visible */
     border-radius: 8px;
     margin-bottom: 10px;
 }

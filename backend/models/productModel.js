@@ -11,7 +11,7 @@ const ProductSchema = new mongoose.Schema({
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
     subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'SubCategory' },
     seller: { type: mongoose.Schema.Types.ObjectId, ref: 'seller', required: true },
-    //image: { type: String, required:true },
+    image: { type: String, required:true },
       // ...other fields
       visibilityLevel: {
         type: String,
@@ -25,6 +25,11 @@ const ProductSchema = new mongoose.Schema({
                  value:{type:String}
     }],
     approved: { type: Boolean, default: false },
+    saleType: {
+        type: String,
+        enum: ['Sale By Seller', 'Sale By OGCS'], // Sale type options
+        required: true
+    },
     ratings: [{
         star: { type: Number, required: true },
         postedby: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }

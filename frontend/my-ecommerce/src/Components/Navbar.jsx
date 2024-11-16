@@ -90,20 +90,30 @@ const Navbar = () => {
   const openWishlist = () => {
     navigate('/wishlist');
   };
-
   const loginUserCtrl = async (e) => {
     e.preventDefault();
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
     try {
-      const response = await axios.post('http://localhost:5000/api/user/login', { email: trimmedEmail, password: trimmedPassword });
-      if (response.status === 200) {
-        setIsModalVisible(false);
-      }
+        const response = await axios.post('http://localhost:5000/api/user/login', {
+            email: trimmedEmail,
+            password: trimmedPassword
+        });
+
+        if (response.status === 200) {
+            const { user, token } = response.data;
+            
+            // Save userId and token in localStorage or context
+            localStorage.setItem("userId", user._id);
+            localStorage.setItem("token", token);
+
+            setIsModalVisible(false); // Close the modal on successful login
+        }
     } catch (error) {
-      setErrorMessage(error.response?.data.message || 'Something went wrong');
+        setErrorMessage(error.response?.data.message || 'Something went wrong');
     }
-  };
+};
+
 
   const createUser = async (e) => {
     e.preventDefault();
@@ -185,13 +195,15 @@ const Navbar = () => {
           <i className="bi bi-cart-fill"></i> Order
         </button>
       </div>
-
-      <div className='navbar-heart'>
-        <button onClick={openWishlist}>
-          <i className="bi bi-heart-fill"></i>
+      {/* Add Cart Icon */}
+  <button className='cartButton' onClick={() => navigate('/cart')}>
+    <i className="bi bi-cart">cart</i>
+  </button>
+  <div className='navbar-heart'>
+        <button onClick={openWishlist} className="wishlist-button">
+          <i className="bi bi-heart-fill"></i> Wishlist
         </button>
       </div>
-
       {isModalVisible && (
         <div className="modal">
           <div className="modal-content">

@@ -76,6 +76,7 @@ const ManageProducts = () => {
   
     const productsToSubmit = products.map((product) => ({
       ...product,
+      saleType: product.saleMode.trim(),
       quantity: Number(product.quantity) || 0,
       category: selectedCategory._id,
       subcategory: selectedSubcategory._id,
@@ -84,21 +85,21 @@ const ManageProducts = () => {
     Promise.all(
       productsToSubmit.map((product) => {
         const formData = new FormData();
-        formData.append("name", product.name);
-        formData.append("description", product.description);
-        formData.append("price", product.price);
-        formData.append("size", product.size);
-        formData.append("quantity", product.quantity);
-        formData.append("saleMode", product.saleMode);
-        formData.append("category", selectedCategory._id);
-        formData.append("subcategory", selectedSubcategory._id);
-        formData.append("image", product.image); // Append the file
-  
-        // Append each specification as individual key-value pairs
-        product.specifications.forEach((spec, index) => {
-          formData.append(`specifications[${index}][key]`, spec.key);
-          formData.append(`specifications[${index}][value]`, spec.value);
-        });
+formData.append("name", product.name);
+formData.append("description", product.description);
+formData.append("price", product.price);
+formData.append("size", product.size);
+formData.append("quantity", product.quantity);
+formData.append("saleType", product.saleMode.trim()); // Ensure proper field
+formData.append("category", selectedCategory._id);
+formData.append("subcategory", selectedSubcategory._id);
+formData.append("image", product.image); // Ensure image file is uploaded
+
+product.specifications.forEach((spec, index) => {
+    formData.append(`specifications[${index}][key]`, spec.key);
+    formData.append(`specifications[${index}][value]`, spec.value);
+});
+
   
         return axios.post('http://localhost:5000/api/seller/sell-product', formData, {
           headers: {
@@ -117,7 +118,7 @@ const ManageProducts = () => {
           price: '',
           size: '',
           quantity: '',
-          saleMode: 'Sale By Seller',
+          saleMode: 'Sale by Seller',
           category: selectedCategory._id,
           subcategory: selectedSubcategory._id,
           image: null,

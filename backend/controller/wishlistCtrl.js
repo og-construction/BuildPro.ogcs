@@ -2,7 +2,7 @@ const Wishlist = require('../models/Wishlist');
 const { validateMongodbId } = require('./CategoryCtrl');
 
 // Add to Wishlist
-exports.addToWishlist = async (req, res) => {
+const addToWishlist = async (req, res) => {
   const { userId, productId } = req.body;
   validateMongodbId(userId);
 
@@ -19,7 +19,7 @@ exports.addToWishlist = async (req, res) => {
 };
 
 // Get a user's Wishlist
-exports.getWishlist = async (req, res) => {
+const getWishlist = async (req, res) => {
   const { userId } = req.params;
   validateMongodbId(userId);
 
@@ -33,7 +33,7 @@ exports.getWishlist = async (req, res) => {
 };
 
 // Delete a user's Wishlist
-exports.deleteWishlist = async (req, res) => {
+const deleteWishlist = async (req, res) => {
   const { userId } = req.params;
   validateMongodbId(userId);
 
@@ -45,3 +45,5 @@ exports.deleteWishlist = async (req, res) => {
     res.status(500).json({ message: 'Error deleting wishlist', error });
   }
 };
+
+module.exports = {addToWishlist, getWishlist,deleteWishlist}

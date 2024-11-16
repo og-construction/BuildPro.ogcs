@@ -12,6 +12,7 @@ const seller = require("./routes/sellerRoute");
 const OrderRoute = require("./routes/OrderRoute");
 const cart = require('./routes/CartRoute');
 const payment = require('./routes/paymentRoute');
+const wishlist = require('./routes/wishlistRoute'); // Correctly import
 const bodyParser = require('body-parser');
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const cookieParser = require('cookie-parser');
@@ -85,6 +86,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/order', OrderRoute);
 app.use('/api/cart', cart);
 app.use('/api/payment', payment);
+app.use('/api/wishlist', wishlist); // Properly set the base path
 
 // Static File Serving with CORS Headers
 app.use('/uploads', express.static('uploads', {

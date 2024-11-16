@@ -147,6 +147,10 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
     });
 });
 
+//
+
+
+
 //--------------------------------
 // Get All Sellers
 const getAllSellers = asyncHandler(async (req, res) => {
@@ -349,46 +353,48 @@ const approveProduct = asyncHandler(async (req, res) => {
 
 // Example of how to call the processSale function after a product sale
 const CreateProduct = asyncHandler(async (req, res) => {
-    const { name, description = '', price, size, quantity, specifications = [], category, subcategory } = req.body;
+    const { name, description = '', price, size, quantity, specifications = [], category, subcategory, saleType, image } = req.body;
     const sellerId = req.seller?._id;
 
-    if (!name || !price || !size || !quantity || !category || !sellerId) {
-     //   console.error("Invalid product details or unauthorized request.");
-        return res.status(400).json({ message: "Invalid product details or unauthorized request." });
+    if (!name || !price || !size || !quantity || !category || !subcategory|| !sellerId  || !saleType) {
+      return res.status(400).json({ message: "All fields are required, including sale type" });
     }
-
-    //try {
-       // const image = req.file ? `/uploads/images/${req.file.filename}` : '';
-      //  if (!image) {
-          //  console.error("Image file is required");
-       //     return res.status(400).json({ message: "Image file is required" });
-       // }
-
-        // Correctly defining and saving `newProduct`
-        const newProduct = new Product({
-            name,
-            description,
-            price,
-            size,
-            quantity,
-            seller: sellerId,
-            category,
-            subcategory: subcategory || null,
-            specifications,
-        //    image,
-            slug: slugify(name)
-        });
-
-        await newProduct.save();
-        console.log("Product saved to database:", newProduct);
-
-        // Double-check by querying the saved product
-        const savedProduct = await Product.findById(newProduct._id);
-        if (!savedProduct) {
-            console.error("Product not found in the database after saving.");
-        } else {
-            console.log("Product found in database:", savedProduct);
+    if (!['Sale By Seller', 'Sale By OGCS'].includes(saleType)) {
+        return res.status(400).json({ message: "Invalid sale type" });
+    }
+    
+    try {
+    
+        const image = req.file ? `/uploads/images/${req.file.filename}` : '';
+        if (!image) {
+            console.log('image is required', image)
+            return res.status(400).json({ message: "Image file is required" });
         }
+        
+      const newProduct = new Product({
+        name,
+        description,
+        price,
+        size,
+        quantity,
+        specifications,
+        seller: sellerId,
+        category,
+        subcategory,
+        saleType, // Store saleType directly
+        visibilityLevel: '1X',
+        image,
+        slug: slugify(name),
+      });
+  
+      await newProduct.save();
+
+      const savedProduct = await Product.findById(newProduct._id)
+      if(!savedProduct){
+        console.error("Product not found in the database after saving")
+      } else{
+        console.log("product found in database", savedProduct)
+      }
 
         // Emit notification to all connected clients
         const io = socket.getIO();
@@ -397,16 +403,22 @@ const CreateProduct = asyncHandler(async (req, res) => {
         } else {
             console.error("Socket.io is not initialized.");
         }
+      res.status(201).json({
+        message: "Product created successfully",
+        product: newProduct,
+      });
+    } catch (error) {
+      console.error("Error creating product:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+  
 
-        res.status(201).json({
-            message: "Product created successfully. Waiting for admin approval.",
-            product: newProduct,
-        });
   //  } catch (error) {
    //     console.error("Error creating product:", error);
    //     res.status(500).json({ message: "Internal Server Error" });
    // }
-});
+
 
 const getAllProducts = asyncHandler(async (req, res) => {
     const sellerId = req.seller._id; // Assuming seller ID is available in req.seller
@@ -752,7 +764,21 @@ const getProductDetails = asyncHandler(async (req, res) => {
     });
 });
 
-
+/*const getProductDetails = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const product = await Product.findById(id).populate('seller', 'name companyName');
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      res.status(200).json(product);
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+  });
+  
+*/
 
 // Fetch all approved products
 const getApprovedProducts = asyncHandler(async (req, res) => {
@@ -766,7 +792,7 @@ const getApprovedProducts = asyncHandler(async (req, res) => {
 
 // get all visible products
 // Fetch similar products based on category and visibility levels
-const getSimilarProducts = asyncHandler(async (req, res) => {
+/*const getSimilarProducts = asyncHandler(async (req, res) => {
     const { name } = req.query;
 
     try {
@@ -832,7 +858,35 @@ console.log('final product', finalProductList)
     }
 });
 
+*/
+const getSimilarProducts = asyncHandler(async (req, res) => {
+    const { name } = req.query;
 
+    try {
+        if (!name) {
+            return res.status(400).json({ message: "Product name is required" });
+        }
+
+        // Fetch all approved products with a name similar to the provided name
+        const products = await Product.find({
+            name: { $regex: new RegExp(name, "i") }, // Case-insensitive match
+            approved: true,
+        });
+
+        // Exclude the product currently being viewed (if `req.params.id` is available)
+        const currentProductId = req.params.id; // Ensure this is passed in the request
+        const similarProducts = products.filter(product => product._id.toString() !== currentProductId);
+
+        if (!similarProducts.length) {
+            return res.status(200).json({ message: "No similar products found", products: [] });
+        }
+
+        res.status(200).json(similarProducts);
+    } catch (error) {
+        console.error("Error fetching similar products:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 // Get Products by Subcategory ID
 const getProductsBySubcategoryId = asyncHandler(async (req, res) => {

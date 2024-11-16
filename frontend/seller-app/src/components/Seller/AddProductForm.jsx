@@ -71,10 +71,10 @@ const AddProductForm = ({
         onChange={(e) => setQuantity(e.target.value)}
         placeholder="Enter quantity"
       />
-      <select value={saleMode} onChange={(e) => setSaleMode(e.target.value)}>
-        <option value="Sale By Seller">Sale By Seller</option>
-        <option value="Sale By OGCS">Sale By OGCS</option>
-      </select>
+     <select value={saleMode} onChange={(e) => setSaleMode(e.target.value)}>
+  <option value="Sale By Seller">Sale by Seller</option>
+  <option value="Sale By OGCS">Sale by OGCS</option>
+</select>
 
       {/* Image upload input */}
       <input

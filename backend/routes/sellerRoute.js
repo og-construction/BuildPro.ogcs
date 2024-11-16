@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { forgotPasswordToken, resetPassword, updatePassword, loginSellerCtrl, getAllSellers, handleRefreshToken, logout, deleteSeller,  createSeller,  verifyOtp, updateProduct, deleteProduct, getAllProducts, CreateProduct,  createProductWithVisibility, updateProductVisibility, getSimilarProducts } = require('../controller/sellerCtrl');
+const { forgotPasswordToken, resetPassword, updatePassword, loginSellerCtrl, getAllSellers, handleRefreshToken, logout, deleteSeller,  createSeller,  verifyOtp, updateProduct, deleteProduct, getAllProducts, CreateProduct,  createProductWithVisibility, updateProductVisibility, getSimilarProducts, getProductDetails } = require('../controller/sellerCtrl');
 const { isAdmin, authSellerMiddleware, authAdminMiddleware } = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/multer')
 
@@ -17,6 +17,7 @@ router.post('/forgot-password-token', forgotPasswordToken)
 router.put('/reset-password/:token', resetPassword)
 router.put('/password', authSellerMiddleware, updatePassword)
 router.post("/login", loginSellerCtrl);
+router.post('/logout',logout)
 router.get('/all-seller', authAdminMiddleware, getAllSellers); // Require auth and admin for all users
 router.get("/logout",logout)
 router.get("/refresh-token", handleRefreshToken);
@@ -30,7 +31,7 @@ router.post('/sell-product', authSellerMiddleware, upload.single('image'), Creat
 router.get('/get-all-products', authSellerMiddleware, getAllProducts);
 router.put('/update-product/:id', authSellerMiddleware, upload.single('image'), updateProduct);
 router.delete('/delete-product/:id', authSellerMiddleware, deleteProduct);
-
+router.get('/details/:id', getProductDetails);
 // For admin/user-specific routes, use authUserMiddleware and isAdmin where needed
 router.get('/all-seller', authAdminMiddleware, getAllSellers);
 
