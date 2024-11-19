@@ -30,22 +30,6 @@ const ProductList = () => {
     };
     
 
-    const handleProceedCheckout = (product) => {
-        if (product.saleType === "Sale By Seller") {
-            const confirmMessage = "This product is sold directly by the seller. Do you wish to proceed to view seller details?";
-            const userConfirmed = window.confirm(confirmMessage); // Display confirmation message
-            if (userConfirmed) {
-                setSellerDetails(product.seller); // Set the seller details
-                setIsModalVisible(true); // Show modal with seller details
-            } else {
-                // User canceled, do nothing
-                return;
-            }
-        } else if (product.saleType === "Sale By OGCS") {
-            navigate('/cart', { state: { product } }); // Navigate to checkout for Sale By OGCS
-        }
-    };
-
     const closeModal = () => {
         setIsModalVisible(false);
         setSellerDetails(null);
@@ -89,14 +73,9 @@ const ProductList = () => {
                             className="add-to-wishlist"
                             onClick={() => handleAddToWishlist(product)}
                         >
-                            <FontAwesomeIcon icon={faHeart} /> Add to Wishlist
+                            <FontAwesomeIcon icon={faHeart} /> 
                         </button>
-                        <button
-                            className="proceed-checkout"
-                            onClick={() => handleProceedCheckout(product)} // Trigger modal on "Proceed to Checkout"
-                        >
-                            Proceed to Checkout
-                        </button>
+                       
                     </div>
                 ))}
             </div>

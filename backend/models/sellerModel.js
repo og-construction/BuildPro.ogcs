@@ -7,6 +7,8 @@ const sellerSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     mobile: { type: String, required: true, unique: true },
+    gstNumber: { type: String, required: true, unique: true },
+
     companyName: {
         type: String,
         required:true
@@ -18,7 +20,14 @@ const sellerSchema = new mongoose.Schema({
     verificationOtp: {type: String},
     verificationExpires: Date,
     isBlocked: {type: Boolean, default: false},
-    address: [{ type: ObjectId, ref: "Address", required: true}],
+    address: { 
+        street: { type: String, required: true },
+        city: { type: String, required: true },
+        state: { type: String, required: true },
+        country: { type: String, required: true },
+        postalCode: { type: String, required: true },
+    },
+    
     refreshToken: [{type: String, default:null}],
     passwordChangedAt: Date,
     passwordResetToken : String,

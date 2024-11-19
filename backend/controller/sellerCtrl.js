@@ -19,9 +19,9 @@ const Category = require('../models/CategoryModel')
 
 
 const createSeller = asyncHandler(async (req, res) => {
-    const { name, email, mobile, password,companyName, role } = req.body;
+    const { name, email, mobile, password, companyName, role, street, city, state, country, postalCode } = req.body;
 
-    if (!name || !email || !mobile || !companyName || !password || !role) {
+    if (!name || !email || !mobile || !companyName || !password || !role || !street || !city || !state || !country || !postalCode) {
         res.status(400);
      throw new Error("All fields are required" );
     }
@@ -31,7 +31,10 @@ const createSeller = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("Seller already exists");
     }
-const newSeller = new Seller({name, email, mobile,companyName, password, role})
+
+    const address = { street, city, state, country, postalCode };
+ 
+const newSeller = new Seller({name, email, mobile,companyName, password, role,address})
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -750,7 +753,7 @@ const getSellerDetails = asyncHandler(async (req, res) => {
 });
 
 const getProductDetails = asyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate('seller', 'name email mobile companyName address');
     if (!product) {
         return res.status(404).json({ message: "Product not found" });
     }
@@ -760,25 +763,12 @@ const getProductDetails = asyncHandler(async (req, res) => {
 
     res.status(200).json({
         ...product.toObject(),
+        seller: product.saleType === 'Sale By Seller' ? product.seller : null,
+
         isAdmin
     });
 });
 
-/*const getProductDetails = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const product = await Product.findById(id).populate('seller', 'name companyName');
-      if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-      res.status(200).json(product);
-    } catch (error) {
-      res.status(500).json({ message: 'Internal Server Error', error: error.message });
-    }
-  });
-  
-*/
 
 // Fetch all approved products
 const getApprovedProducts = asyncHandler(async (req, res) => {
@@ -906,6 +896,24 @@ const getProductsBySubcategoryId = asyncHandler(async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+// Fetch seller details by ID
+const getSellerDetailsById = asyncHandler(async (req, res) => {
+    const { id } = req.params; // Extract seller ID from request parameters
+    validateMongodbId(id); // Validate the MongoDB ID format
+
+    try {
+        const seller = await Seller.findById(id).select("name email mobile companyName address");
+        if (!seller) {
+            return res.status(404).json({ message: "Seller not found" });
+        }
+
+        res.status(200).json(seller); // Return the seller details
+    } catch (error) {
+        console.error("Error fetching seller details:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+});
+
 
 module.exports = {createSeller,resetPassword, 
     forgotPasswordToken, 
@@ -919,4 +927,4 @@ module.exports = {createSeller,resetPassword,
      getProductDetails,approveProduct,getApprovedProducts
     ,createProductWithVisibility
 , updateProductVisibility, getSimilarProducts
-,getProductsBySubcategoryId}
+,getProductsBySubcategoryId,getSellerDetailsById}

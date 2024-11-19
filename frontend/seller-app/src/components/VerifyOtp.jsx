@@ -1,4 +1,3 @@
- // src/components/VerifyOtp.jsx
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { verifyOtp } from '../api';  
@@ -19,18 +18,16 @@ const VerifyOtp = () => {
     e.preventDefault();
   
     try {
-      await verifyOtp({ email, otp });
-      navigate('/sign-in');
+      const response = await verifyOtp({ email, otp }); // Verify OTP via API
+      const { sellerId } = response.data; // Get sellerId from the API response
+      navigate('/payment', { state: { sellerId } }); // Pass sellerId to PaymentPage
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'OTP verification failed');
       setOtp(''); // Reset OTP field after an error
     }
   };
-
-  const handlePaymentSubmit = () => {
-    navigate('/payment')
-  }
   
+
   return (
     <div className="verify-otp-container">
       <h2>Verify OTP</h2>
@@ -46,7 +43,7 @@ const VerifyOtp = () => {
           />
         </div>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
-        <button type="submit" onClick={handlePaymentSubmit}>Verify OTP</button>
+        <button type="submit">Verify OTP</button>
       </form>
     </div>
   );

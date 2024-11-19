@@ -1,18 +1,23 @@
 .buyerschoice-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center; /* Center the content */
     padding: 20px;
     background-color: #f2f2f2;
-    overflow-x: hidden; /* Removes horizontal scroll */
+    overflow-x: hidden; /* No horizontal scroll */
+    overflow-y: auto; /* Enable vertical scroll if needed */
+    width: 100%; /* Ensure the container stays within the viewport width */
+    box-sizing: border-box; /* Include padding and borders in width */
+    
 }
 
 .category-box {
-    width: 300px;
+    width: 100%; /* Adjust to take full width if needed */
+    max-width: 400px; /* Maximum width for each category box */
     background-color: white;
     margin: 10px;
     padding: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .category-box h2 {
@@ -23,14 +28,17 @@
 .items-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    grid-auto-rows: auto;
+    grid-auto-rows: auto; /* Automatically adjust row height */
     gap: 20px;
-    max-height: 400px; /* Adjust height for scroll area */
-    overflow-y: auto; /* Add vertical scroll for extra items */
+    max-height: calc(2 * 200px + 50px); /* Show 2 rows with a gap (adjust height as needed) */
+    overflow-y: auto; /* Enable vertical scroll for extra rows */
+    overflow-x: hidden; /* Ensure no horizontal scroll */
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ensure the grid fits the container width */
+    box-sizing: border-box; /* Include padding and borders in width */
 }
 
 .item-box {
@@ -40,12 +48,14 @@
     border-radius: 8px;
     transition: transform 0.2s, box-shadow 0.2s;
     background-color: #fff;
+    height: auto; /* Set a consistent height for each item */
+    box-sizing: border-box; /* Ensure padding and border fit within height */
 }
 
 .item-box img {
     width: 100%;
     height: auto; /* Adjust height proportionally */
-    object-fit: contain; /* Ensures the full image is visible */
+    object-fit: contain; /* Ensure the full image is visible */
 }
 
 .item-box p {
@@ -78,7 +88,7 @@
 .subcategory-image {
     width: 100%;
     height: auto; /* Adjust height proportionally */
-    object-fit: contain; /* Ensures the full image is visible */
+    object-fit: contain; /* Ensure the full image is visible */
     border-radius: 8px;
     margin-bottom: 10px;
 }

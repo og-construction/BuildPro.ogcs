@@ -38,7 +38,7 @@ const Onexvideo = () => {
 
   return (
     <div className='building-materials'>
-      <h1 className='section-title'>Bulding and supplies at your fingertips</h1>
+      <h1 className='section-title'>Bulding  supplies at your fingertips</h1>
       <div className="onexvideo-container">
       <div className="categories-row">
         {categories.map((category) => (

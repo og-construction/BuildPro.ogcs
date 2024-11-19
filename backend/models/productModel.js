@@ -10,7 +10,7 @@ const ProductSchema = new mongoose.Schema({
     quantity: { type: Number, required: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
     subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'SubCategory' },
-    seller: { type: mongoose.Schema.Types.ObjectId, ref: 'seller', required: true },
+    seller: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true },
     image: { type: String, required:true },
       // ...other fields
       visibilityLevel: {

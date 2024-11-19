@@ -10,7 +10,11 @@ const CreateAccountForm = () => {
     email: '',
     mobile: '',
     companyName:"",
-    Address: "",
+    street: '', // Add street
+    city: '', // Add city
+    state: '', // Add state
+    country: '', // Add country
+    postalCode: '', // Add postal code
     password: '',
     confirmPassword: '',
     
@@ -96,10 +100,63 @@ const CreateAccountForm = () => {
           <label htmlFor='companyName'>Company Name</label>
           <input type='text' id='companyName' name='companyName' value={formData.companyName} onChange={handleChange} required />
         </div>
-        <div className='form-group'>
-          <label htmlFor='Address'>Address</label>
-          <input type='text' id='Address' name='Address' value={formData.Address} onChange={handleChange}/>
-        </div>
+        <div className="form-group">
+  <label htmlFor="street">Street</label>
+  <input
+    type="text"
+    id="street"
+    name="street"
+    value={formData.street}
+    onChange={handleChange}
+    required
+  />
+</div>
+<div className="form-group">
+  <label htmlFor="city">City</label>
+  <input
+    type="text"
+    id="city"
+    name="city"
+    value={formData.city}
+    onChange={handleChange}
+    required
+  />
+</div>
+<div className="form-group">
+  <label htmlFor="state">State</label>
+  <input
+    type="text"
+    id="state"
+    name="state"
+    value={formData.state}
+    onChange={handleChange}
+    required
+  />
+</div>
+<div className="form-group">
+  <label htmlFor="country">Country</label>
+  <input
+    type="text"
+    id="country"
+    name="country"
+    value={formData.country}
+    onChange={handleChange}
+    required
+  />
+</div>
+<div className="form-group">
+  <label htmlFor="postalCode">Postal Code</label>
+  <input
+    type="text"
+    id="postalCode"
+    name="postalCode"
+    value={formData.postalCode}
+    onChange={handleChange}
+    required
+  />
+</div>
+
+
         <div className="form-group">
           <label htmlFor="password">Password</label>
           <input

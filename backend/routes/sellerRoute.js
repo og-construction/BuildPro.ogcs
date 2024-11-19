@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { forgotPasswordToken, resetPassword, updatePassword, loginSellerCtrl, getAllSellers, handleRefreshToken, logout, deleteSeller,  createSeller,  verifyOtp, updateProduct, deleteProduct, getAllProducts, CreateProduct,  createProductWithVisibility, updateProductVisibility, getSimilarProducts, getProductDetails } = require('../controller/sellerCtrl');
+const { forgotPasswordToken, resetPassword, updatePassword, loginSellerCtrl, getAllSellers, handleRefreshToken, logout, deleteSeller,  createSeller,  verifyOtp, updateProduct, deleteProduct, getAllProducts, CreateProduct,  createProductWithVisibility, updateProductVisibility, getSimilarProducts, getProductDetails, getSellerDetailsById } = require('../controller/sellerCtrl');
 const { isAdmin, authSellerMiddleware, authAdminMiddleware } = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/multer')
 
@@ -34,7 +34,9 @@ router.delete('/delete-product/:id', authSellerMiddleware, deleteProduct);
 router.get('/details/:id', getProductDetails);
 // For admin/user-specific routes, use authUserMiddleware and isAdmin where needed
 router.get('/all-seller', authAdminMiddleware, getAllSellers);
-
+router.get('/seller-by-id/:id',getSellerDetailsById
+    
+)
 // Mixed routes with admin permissions and seller access
 router.put('/update-seller/:id', authAdminMiddleware, updatePassword);
 router.delete('/delete-seller/:id', authAdminMiddleware, deleteSeller);
