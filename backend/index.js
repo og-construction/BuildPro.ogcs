@@ -26,6 +26,12 @@ const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 4000;
 
+app.post('/ccavResponseHandler', (req, res) => {
+    // Handle payment response
+    res.send('Response received successfully.');
+});
+app.listen(3001, () => console.log('Server is running on port 3001.'));
+
 // Initialize Socket.IO through the socket helper
 socket.init(server);
 

@@ -25,7 +25,7 @@ exports.initiatePayment = async (req, res) => {
 
     // Calculate Charges
     const registrationFee = 10000;
-    const tierCharges = { 1: 500000, 2: 900000, 3: 1400000, 4: 1800000 };
+    //const tierCharges = { 1: 500000, 2: 900000, 3: 1400000, 4: 1800000 };
   //  const tierCharge = tierCharges[visibilityTier];
    // if (!tierCharge) {
      // return res.status(400).json({ message: "Invalid Visibility Tier selected" });
@@ -60,31 +60,52 @@ exports.initiatePayment = async (req, res) => {
 exports.handlePaymentResponse = async (req, res) => {
   try {
     const { encResp } = req.body;
-    if (!encResp) return res.status(400).json({ message: "Response data is required" });
+    if (!encResp) {
+      console.error('No encResp received');
+      return res.status(400).json({ message: 'Response data is required' });
+    }
+
+    // Log raw response
+    console.log('Raw encResp received:', encResp);
 
     const decryptedResponse = decrypt(encResp, workingKey);
-    const parsedResponse = new URLSearchParams(decryptedResponse);
-    const orderId = parsedResponse.get("order_id");
-    const status = parsedResponse.get("order_status");
+    console.log('Decrypted Response:', decryptedResponse);
 
+    const parsedResponse = new URLSearchParams(decryptedResponse);
+    const orderId = parsedResponse.get('order_id');
+    const status = parsedResponse.get('order_status');
+    const amount = parsedResponse.get('amount');
+
+    if (!status) {
+      console.error('order_status is missing');
+      return res.status(400).json({
+        message: 'Invalid payment response: order_status is missing',
+        decryptedResponse,
+      });
+    }
+
+    // Update database and respond
     const payment = await Payment.findOneAndUpdate(
       { orderId },
-      { paymentStatus: status },
+      { paymentStatus: status, amount },
       { new: true }
     );
 
-    if (!payment) return res.status(404).json({ message: "Order not found" });
+    if (!payment) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
 
-    res.status(200).json({ message: "Payment response handled successfully", status });
+    res.status(200).json({ message: 'Payment response handled successfully', status, payment });
   } catch (error) {
-    res.status(500).json({ message: "Error handling payment response", error: error.message });
+    console.error('Error handling payment response:', error);
+    res.status(500).json({ message: 'Error handling payment response', error: error.message });
   }
 };
 
 // Function to process encResp
 const handleEncResp = (encResp) => {
   try {
-    const decryptedData = decrypt(encResp, workingKey); // Decrypt the encResp
+    const decryptedData = decrypt(encResp, workingKey);
     console.log('Decrypted Response:', decryptedData);
 
     // Convert the decrypted data to an object for easier access
@@ -100,8 +121,7 @@ const handleEncResp = (encResp) => {
 
     return responseParams; // Return the parsed response for further use
   } catch (error) {
-    console.error('Error decrypting encResp:', error);
-    throw new Error('Decryption failed');
+    console.error('Decryption failed:', error.message, { encResp, workingKey });
   }
 };
 
