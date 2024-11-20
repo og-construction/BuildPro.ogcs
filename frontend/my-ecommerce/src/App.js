@@ -11,10 +11,13 @@ import Cart from './Pages/Cart';
 import Wishlist from './Components/Wishlist';
 import ProductList from './Pages/ProductList.jsx';
 import ProductDetails from './Pages/productDetails.jsx'; // Corrected import
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <Router>
+    <ToastContainer/>
       <div>
         <Navbar />
         <Routes>
