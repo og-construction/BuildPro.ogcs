@@ -19,9 +19,9 @@ const Category = require('../models/CategoryModel')
 
 
 const createSeller = asyncHandler(async (req, res) => {
-    const { name, email, mobile, password,companyName, role } = req.body;
+    const { name, email, mobile, password, companyName, role, street, city, state, country, postalCode } = req.body;
 
-    if (!name || !email || !mobile || !companyName || !password || !role) {
+    if (!name || !email || !mobile || !companyName || !password || !role || !street || !city || !state || !country || !postalCode) {
         res.status(400);
      throw new Error("All fields are required" );
     }
@@ -31,7 +31,10 @@ const createSeller = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("Seller already exists");
     }
-const newSeller = new Seller({name, email, mobile,companyName, password, role})
+
+    const address = { street, city, state, country, postalCode };
+ 
+const newSeller = new Seller({name, email, mobile,companyName, password, role,address})
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -146,6 +149,10 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
         res.status(200).json({ accessToken: newAccessToken });
     });
 });
+
+//
+
+
 
 //--------------------------------
 // Get All Sellers
@@ -349,46 +356,48 @@ const approveProduct = asyncHandler(async (req, res) => {
 
 // Example of how to call the processSale function after a product sale
 const CreateProduct = asyncHandler(async (req, res) => {
-    const { name, description = '', price, size, quantity, specifications = [], category, subcategory } = req.body;
+    const { name, description = '', price, size, quantity, specifications = [], category, subcategory, saleType, image } = req.body;
     const sellerId = req.seller?._id;
 
-    if (!name || !price || !size || !quantity || !category || !sellerId) {
-     //   console.error("Invalid product details or unauthorized request.");
-        return res.status(400).json({ message: "Invalid product details or unauthorized request." });
+    if (!name || !price || !size || !quantity || !category || !subcategory|| !sellerId  || !saleType) {
+      return res.status(400).json({ message: "All fields are required, including sale type" });
     }
-
+    if (!['Sale By Seller', 'Sale By OGCS'].includes(saleType)) {
+        return res.status(400).json({ message: "Invalid sale type" });
+    }
+    
     try {
+    
         const image = req.file ? `/uploads/images/${req.file.filename}` : '';
         if (!image) {
-          //  console.error("Image file is required");
+            console.log('image is required', image)
             return res.status(400).json({ message: "Image file is required" });
         }
+        
+      const newProduct = new Product({
+        name,
+        description,
+        price,
+        size,
+        quantity,
+        specifications,
+        seller: sellerId,
+        category,
+        subcategory,
+        saleType, // Store saleType directly
+        visibilityLevel: '1X',
+        image,
+        slug: slugify(name),
+      });
+  
+      await newProduct.save();
 
-        // Correctly defining and saving `newProduct`
-        const newProduct = new Product({
-            name,
-            description,
-            price,
-            size,
-            quantity,
-            seller: sellerId,
-            category,
-            subcategory: subcategory || null,
-            specifications,
-            image,
-            slug: slugify(name)
-        });
-
-        await newProduct.save();
-        console.log("Product saved to database:", newProduct);
-
-        // Double-check by querying the saved product
-        const savedProduct = await Product.findById(newProduct._id);
-        if (!savedProduct) {
-            console.error("Product not found in the database after saving.");
-        } else {
-            console.log("Product found in database:", savedProduct);
-        }
+      const savedProduct = await Product.findById(newProduct._id)
+      if(!savedProduct){
+        console.error("Product not found in the database after saving")
+      } else{
+        console.log("product found in database", savedProduct)
+      }
 
         // Emit notification to all connected clients
         const io = socket.getIO();
@@ -397,16 +406,22 @@ const CreateProduct = asyncHandler(async (req, res) => {
         } else {
             console.error("Socket.io is not initialized.");
         }
-
-        res.status(201).json({
-            message: "Product created successfully. Waiting for admin approval.",
-            product: newProduct,
-        });
+      res.status(201).json({
+        message: "Product created successfully",
+        product: newProduct,
+      });
     } catch (error) {
-        console.error("Error creating product:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+      console.error("Error creating product:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
-});
+  });
+  
+
+  //  } catch (error) {
+   //     console.error("Error creating product:", error);
+   //     res.status(500).json({ message: "Internal Server Error" });
+   // }
+
 
 const getAllProducts = asyncHandler(async (req, res) => {
     const sellerId = req.seller._id; // Assuming seller ID is available in req.seller
@@ -511,53 +526,81 @@ const getAllProducts = asyncHandler(async (req, res) => {
 });
 
 */
-
-
-
-
 const updateProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    // Find the product by ID
-    const product = await Product.findById(id);
-    if (!product) {
-        return res.status(404).json({ message: "Product not found" });
+    try {
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        const isAdmin = req.admin && req.admin.role === 'admin';
+        const isOwner = req.seller && product.seller.equals(req.seller._id);
+
+        if (!isAdmin && !isOwner) {
+            return res.status(403).json({ message: "Not authorized to update this product" });
+        }
+
+        // Parse or validate specifications
+        if (req.body.specifications) {
+            let specifications = req.body.specifications;
+
+            // Check if specifications is a string and parse it
+            if (typeof specifications === 'string') {
+                try {
+                    specifications = JSON.parse(specifications);
+                } catch (error) {
+                    console.error("Error parsing specifications:", error.message);
+                    return res.status(400).json({ message: "Invalid specifications format" });
+                }
+            }
+
+            // Validate specifications is an array and has valid keys and values
+            if (!Array.isArray(specifications)) {
+                return res.status(400).json({ message: "Specifications must be an array" });
+            }
+
+            const isValid = specifications.every(
+                (spec) =>
+                    typeof spec.key === 'string' &&
+                    typeof spec.value === 'string' &&
+                    spec.key.trim() !== '' &&
+                    spec.value.trim() !== ''
+            );
+
+            if (!isValid) {
+                return res.status(400).json({ message: "Each specification must have a valid 'key' and 'value'" });
+            }
+
+            product.specifications = specifications;
+        }
+
+        // Update other fields
+        product.name = req.body.name || product.name;
+        product.description = req.body.description || product.description;
+        product.price = req.body.price || product.price;
+        product.size = req.body.size || product.size;
+        product.quantity = req.body.quantity || product.quantity;
+
+        if (req.file) {
+            product.image = `/uploads/images/${req.file.filename}`;
+        }
+
+        // Unapprove the product if not updated by admin
+        if (!isAdmin) {
+            product.approved = false;
+        }
+
+        const updatedProduct = await product.save();
+        res.status(200).json({
+            message: isAdmin ? "Product updated successfully" : "Product updated and pending admin approval",
+            product: updatedProduct,
+        });
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
-
-    // Ensure either the admin or the seller (product owner) can update the product
-    const isAdmin = req.admin && req.admin.role === 'admin'; // Check if request is from an admin
-    const isOwner = req.seller && product.seller.equals(req.seller._id); // Check if request is from the product owner (seller)
-
-    if (!isAdmin && !isOwner) {
-        return res.status(403).json({ message: "Not authorized to update this product" });
-    }
-
-    // Update fields if provided in the request
-    product.name = req.body.name || product.name;
-    product.description = req.body.description || product.description;
-    product.price = req.body.price || product.price;
-    product.size = req.body.size || product.size;
-    product.quantity = req.body.quantity || product.quantity;
-    product.specifications = req.body.specifications || product.specifications;
-
-    // Check if an image file was provided
-    if (req.file) {
-        product.image = `/uploads/images/${req.file.filename}`;
-    } else if (!product.image) {
-        // If no new image was provided and product has no image, return an error
-        return res.status(400).json({ message: "Image is required" });
-    }
-
-    // If the update is from a seller, mark it as needing admin approval
-    if (!isAdmin) {
-        product.approved = false;
-    }
-
-    const updatedProduct = await product.save();
-    res.status(200).json({ 
-        message: isAdmin ? "Product updated successfully" : "Product updated successfully and is pending admin approval", 
-        product: updatedProduct 
-    });
 });
 
 
@@ -710,7 +753,7 @@ const getSellerDetails = asyncHandler(async (req, res) => {
 });
 
 const getProductDetails = asyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate('seller', 'name email mobile companyName address');
     if (!product) {
         return res.status(404).json({ message: "Product not found" });
     }
@@ -720,10 +763,11 @@ const getProductDetails = asyncHandler(async (req, res) => {
 
     res.status(200).json({
         ...product.toObject(),
+        seller: product.saleType === 'Sale By Seller' ? product.seller : null,
+
         isAdmin
     });
 });
-
 
 
 // Fetch all approved products
@@ -738,7 +782,7 @@ const getApprovedProducts = asyncHandler(async (req, res) => {
 
 // get all visible products
 // Fetch similar products based on category and visibility levels
-const getSimilarProducts = asyncHandler(async (req, res) => {
+/*const getSimilarProducts = asyncHandler(async (req, res) => {
     const { name } = req.query;
 
     try {
@@ -804,7 +848,35 @@ console.log('final product', finalProductList)
     }
 });
 
+*/
+const getSimilarProducts = asyncHandler(async (req, res) => {
+    const { name } = req.query;
 
+    try {
+        if (!name) {
+            return res.status(400).json({ message: "Product name is required" });
+        }
+
+        // Fetch all approved products with a name similar to the provided name
+        const products = await Product.find({
+            name: { $regex: new RegExp(name, "i") }, // Case-insensitive match
+            approved: true,
+        });
+
+        // Exclude the product currently being viewed (if `req.params.id` is available)
+        const currentProductId = req.params.id; // Ensure this is passed in the request
+        const similarProducts = products.filter(product => product._id.toString() !== currentProductId);
+
+        if (!similarProducts.length) {
+            return res.status(200).json({ message: "No similar products found", products: [] });
+        }
+
+        res.status(200).json(similarProducts);
+    } catch (error) {
+        console.error("Error fetching similar products:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 // Get Products by Subcategory ID
 const getProductsBySubcategoryId = asyncHandler(async (req, res) => {
@@ -824,6 +896,24 @@ const getProductsBySubcategoryId = asyncHandler(async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+// Fetch seller details by ID
+const getSellerDetailsById = asyncHandler(async (req, res) => {
+    const { id } = req.params; // Extract seller ID from request parameters
+    validateMongodbId(id); // Validate the MongoDB ID format
+
+    try {
+        const seller = await Seller.findById(id).select("name email mobile companyName address");
+        if (!seller) {
+            return res.status(404).json({ message: "Seller not found" });
+        }
+
+        res.status(200).json(seller); // Return the seller details
+    } catch (error) {
+        console.error("Error fetching seller details:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+});
+
 
 module.exports = {createSeller,resetPassword, 
     forgotPasswordToken, 
@@ -837,4 +927,4 @@ module.exports = {createSeller,resetPassword,
      getProductDetails,approveProduct,getApprovedProducts
     ,createProductWithVisibility
 , updateProductVisibility, getSimilarProducts
-,getProductsBySubcategoryId}
+,getProductsBySubcategoryId,getSellerDetailsById}

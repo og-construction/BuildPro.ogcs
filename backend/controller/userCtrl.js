@@ -294,4 +294,41 @@ const resetPassword = asyncHandler(async(req, res) => {
     res.json(user);
 })
 
+// Get user profile with cart and wishlist
+exports.getUserProfile = async (req, res) => {
+  const { userId } = req.params; // Assuming the user ID is passed as a route parameter
+
+  try {
+    // Fetch the user with populated cart and wishlist
+    const user = await User.findById(userId)
+      .populate({
+        path: 'cart.items.productId', // Populate products in cart
+        model: 'Product', // Assuming the model name is Product
+      })
+      .populate({
+        path: 'wishlist.items.productId', // Populate products in wishlist
+        model: 'Product', // Assuming the model name is Product
+      });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Fetch wishlist and cart separately if needed
+    const wishlist = await Wishlist.findOne({ userId }).populate('items.productId');
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
+
+    // Combine user data with wishlist and cart
+    const userProfile = {
+      ...user.toObject(), // Convert Mongoose document to plain object
+      wishlist: wishlist ? wishlist.items : [],
+      cart: cart ? cart.items : [],
+    };
+
+    res.status(200).json(userProfile);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user profile', error });
+  }
+};
+
 module.exports = { createUser, verifyOtp, loginUserCtrl, getAllUsers,getaUser, updateUser, deleteUser, blockUser, unblockUser, handleRefreshToken,logout, updatePassword, forgotPasswordToken, resetPassword };

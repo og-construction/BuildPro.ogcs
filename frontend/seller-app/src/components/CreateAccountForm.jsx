@@ -15,8 +15,12 @@ const CreateAccountForm = () => {
     name: '',
     email: '',
     mobile: '',
-    companyName: "",
-    Address: "",
+    companyName:"",
+    street: '', // Add street
+    city: '', // Add city
+    state: '', // Add state
+    country: '', // Add country
+    postalCode: '', // Add postal code
     password: '',
     confirmPassword: '',
     role: 'Sale By Seller', // Default role

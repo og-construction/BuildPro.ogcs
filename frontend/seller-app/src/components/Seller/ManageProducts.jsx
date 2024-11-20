@@ -4,6 +4,8 @@ import axios from 'axios';
 import Style from "../Style/ManageProducts.module.css";
 
 const ManageProducts = () => {
+  const [specifications, setSpecifications] = useState([]); // Manage specifications state here
+
   const [products, setProducts] = useState([{
     name: '',
     description: '',
@@ -14,6 +16,8 @@ const ManageProducts = () => {
     category: '',
     subcategory: '',
     image: null, // New field to store the selected image file
+    specifications: [], // Include specifications in submission
+
   }]);
 
   const [categories, setCategories] = useState([]);
@@ -67,10 +71,11 @@ const ManageProducts = () => {
       category: selectedCategory._id,
       subcategory: selectedSubcategory._id,
       image: null, // Initialize image field
+      specifications: [], // Include specifications in submission
+
     }]);
 
   };
-
   const handleSubmit = () => {
     const token = localStorage.getItem("token");
     const incompleteProducts = products.filter(product => !product.quantity);
@@ -78,34 +83,38 @@ const ManageProducts = () => {
       alert('Please ensure all product quantities are filled.');
       return;
     }
-
-    // Map through products to ensure each has the category and subcategory ID before submission
+  
     const productsToSubmit = products.map((product) => ({
       ...product,
-      quantity: Number(product.quantity) || 0, // Converts quantity to a number, defaults to 0 if empty
-
-      category: selectedCategory._id, // Ensure category ID is assigned
-      subcategory: selectedSubcategory._id // Ensure subcategory ID is assigned
+      saleType: product.saleMode.trim(),
+      quantity: Number(product.quantity) || 0,
+      category: selectedCategory._id,
+      subcategory: selectedSubcategory._id,
     }));
-
+  
     Promise.all(
       productsToSubmit.map((product) => {
         const formData = new FormData();
-        formData.append("name", product.name);
-        formData.append("description", product.description);
-        formData.append("price", product.price);
-        formData.append("size", product.size);
-        formData.append("quantity", product.quantity);
-        formData.append("saleMode", product.saleMode);
-        formData.append("category", selectedCategory._id);
-        formData.append("subcategory", selectedSubcategory._id);
-        formData.append("image", product.image); // Append the file
-        console.log("Submitting Product Data:", product);
+formData.append("name", product.name);
+formData.append("description", product.description);
+formData.append("price", product.price);
+formData.append("size", product.size);
+formData.append("quantity", product.quantity);
+formData.append("saleType", product.saleMode.trim()); // Ensure proper field
+formData.append("category", selectedCategory._id);
+formData.append("subcategory", selectedSubcategory._id);
+formData.append("image", product.image); // Ensure image file is uploaded
 
-        return axios.post('http://localhost:5000/api/seller/sell-product', product, {
+product.specifications.forEach((spec, index) => {
+    formData.append(`specifications[${index}][key]`, spec.key);
+    formData.append(`specifications[${index}][value]`, spec.value);
+});
+
+  
+        return axios.post('http://localhost:5000/api/seller/sell-product', formData, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",// Set content type
+            "Content-Type": "multipart/form-data",
           },
         });
       })
@@ -119,10 +128,11 @@ const ManageProducts = () => {
           price: '',
           size: '',
           quantity: '',
-          saleMode: 'Sale By Seller',
+          saleMode: 'Sale by Seller',
           category: selectedCategory._id,
           subcategory: selectedSubcategory._id,
-          image: null, // Reset the image field
+          image: null,
+          specifications: [],
         }]);
       })
       .catch(async (error) => {
@@ -144,6 +154,7 @@ const ManageProducts = () => {
         }
       });
   };
+  
 
   return (
     <div className={Style['manage-products-container']}>
@@ -244,10 +255,15 @@ const ManageProducts = () => {
                 updatedProducts[index].image = file;
                 setProducts(updatedProducts);
               }}
-              selectedCategory={selectedCategory._id}
-              selectedSubcategory={selectedSubcategory._id}
+              selectedCategory={selectedCategory._id} 
+              selectedSubcategory={selectedSubcategory._id} 
 
-
+              specifications={specifications}
+              setSpecifications={(value)=>{
+                const updatedProducts = [index].specifications = value;
+                setSpecifications(updatedProducts)
+              }}
+            
             />
 
           ))}

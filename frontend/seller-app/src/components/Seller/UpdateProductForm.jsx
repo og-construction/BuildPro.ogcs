@@ -22,25 +22,52 @@ const UpdateProductForm = ({ products = [], handleEditProduct }) => {
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
   };
+
+  const handleSpecificationChange = (index, field, value) => {
+    const updatedSpecifications = [...(updatedProduct.specifications || [])];
+    updatedSpecifications[index][field] = value;
+    setUpdatedProduct((prevProduct) => ({
+      ...prevProduct,
+      specifications: updatedSpecifications,
+    }));
+  };
+
+  const addSpecification = () => {
+    setUpdatedProduct((prevProduct) => ({
+      ...prevProduct,
+      specifications: [...(prevProduct.specifications || []), { key: '', value: '' }],
+    }));
+  };
+
+  const removeSpecification = (index) => {
+    const updatedSpecifications = [...(updatedProduct.specifications || [])];
+    updatedSpecifications.splice(index, 1);
+    setUpdatedProduct((prevProduct) => ({
+      ...prevProduct,
+      specifications: updatedSpecifications,
+    }));
+  };
+
   const handleSave = () => {
     if (!updatedProduct._id) {
-        console.error("Product ID is missing in updatedProduct.");
-        return;
+      console.error("Product ID is missing in updatedProduct.");
+      return;
     }
     const formData = new FormData();
     formData.append("_id", updatedProduct._id); // Use _id consistently
     Object.entries(updatedProduct).forEach(([key, value]) => {
+      if (key === 'specifications') {
+        formData.append(key, JSON.stringify(value)); // Serialize specifications
+      } else {
         formData.append(key, value);
+      }
     });
     if (imageFile) {
-        formData.append('image', imageFile);
+      formData.append('image', imageFile);
     }
 
     handleEditProduct(formData); // Pass FormData with _id
-};
-
-
-
+  };
 
   const handleCancel = () => {
     setUpdatedProduct({});
@@ -107,6 +134,29 @@ const UpdateProductForm = ({ products = [], handleEditProduct }) => {
             </td>
           </tr>
           <tr>
+            <td><strong>Specifications:</strong></td>
+            <td>
+              {updatedProduct.specifications && updatedProduct.specifications.map((spec, index) => (
+                <div key={index} style={{ marginBottom: '10px' }}>
+                  <input
+                    type="text"
+                    placeholder="Key"
+                    value={spec.key}
+                    onChange={(e) => handleSpecificationChange(index, 'key', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Value"
+                    value={spec.value}
+                    onChange={(e) => handleSpecificationChange(index, 'value', e.target.value)}
+                  />
+                  <button type="button" onClick={() => removeSpecification(index)}>Remove</button>
+                </div>
+              ))}
+              <button type="button" onClick={addSpecification}>Add Specification</button>
+            </td>
+          </tr>
+          <tr>
             <td><strong>Image:</strong></td>
             <td>
               <input type="file" name="image" onChange={handleImageChange} />
@@ -129,6 +179,12 @@ UpdateProductForm.propTypes = {
       price: PropTypes.number.isRequired,
       size: PropTypes.string.isRequired,
       quantity: PropTypes.number.isRequired,
+      specifications: PropTypes.arrayOf(
+        PropTypes.shape({
+          key: PropTypes.string,
+          value: PropTypes.string,
+        })
+      ),
     })
   ),
   handleEditProduct: PropTypes.func.isRequired,
