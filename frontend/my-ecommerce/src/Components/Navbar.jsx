@@ -5,23 +5,18 @@ import { FaCartPlus, FaHeart, FaSearch, FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "./Assets/buillogo6.png";
 import LoginDialog from "./LoginDialog";
+import PincodeToCity from "./Location";
 
 const Navbar = () => {
   const [isLoginDialogVisible, setIsLoginDialogVisible] = useState(false);
   const [isSignup, setisSignup] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [location, setLocation] = useState("Select your location");
-  const [locations, setLocations] = useState([]);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch available locations (mock data or an API request)
-    const fetchLocations = async () => {
-      const mockLocations = ["Delhi", "Mumbai", "Bangalore", "Chennai"];
-      setLocations(mockLocations);
-    };
 
     // Get user's current location using geolocation API
     const fetchCurrentLocation = async () => {
@@ -38,7 +33,6 @@ const Navbar = () => {
 
               const city =
                 response.data.results[0].components.city || "Unknown City";
-              setLocation(city); // Set default location to the user's city
             } catch (error) {
               console.error("Error fetching geolocation:", error);
             }
@@ -52,7 +46,6 @@ const Navbar = () => {
       }
     };
 
-    fetchLocations();
     fetchCurrentLocation();
   }, []);
 
@@ -133,26 +126,8 @@ const Navbar = () => {
           <img src={logo} alt="Logo" className="h-12" />
         </Link>
 
-        <div className="flex w-full justify-center items-center gap-4">
-          <div className="relative w-48">
-            <FormControl className="w-full">
-              <InputLabel>Location</InputLabel>
-              <Select
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                label="Location"
-                size="small"
-                className="rounded-md"
-              >
-                {locations.map((loc, index) => (
-                  <MenuItem key={index} value={loc}>
-                    {loc}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-
+        <div className="flex w-full justify-center items-center gap-10">
+            <PincodeToCity />
           <form
             className="relative flex items-center w-full md:w-1/3 mt-4"
             onSubmit={handleSearch}
