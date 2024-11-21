@@ -8,40 +8,40 @@ import AboutCompany from "../Components/productListcomponents/companyContent";
 import axiosInstance from "./axiosInstance";
 
 const Buyerschoice = () => {
-  const [categories, setCategories] = useState([]);
+  const [slidercategories, setSliderCategories] = useState([]);
+  const [boxcategories, setboxcategories] = useState([]);
   const navigate = useNavigate();
 
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get(
+        "http://localhost:5000/api/category/get-all"
+      );
+      const categoriesData = response.data;
+      // Fetch subcategories for each category
+      const categoriesWithSubcategories = await Promise.all(
+        categoriesData.map(async (category) => {
+          try {
+            const subcategoriesResponse = await axiosInstance.get(
+              `http://localhost:5000/api/subcategory/category/${category._id}`
+            );
+            return {
+              ...category,
+              subcategories: subcategoriesResponse.data,
+            };
+          } catch (subError) {
+            return { ...category, subcategories: [] }; // fallback to empty array if subcategories not found
+          }
+        })
+      );
+      console.log(categoriesWithSubcategories, "categoriesWithSubcategories");
+
+      setSliderCategories(categoriesWithSubcategories);
+    } catch (error) {
+      console.error("Error fetching categories and subcategories:", error);
+    }
+  };
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axiosInstance.get(
-          "http://localhost:5000/api/category/get-all"
-        );
-        const categoriesData = response.data;
-
-        // Fetch subcategories for each category
-        const categoriesWithSubcategories = await Promise.all(
-          categoriesData.map(async (category) => {
-            try {
-              const subcategoriesResponse = await axiosInstance.get(
-                `http://localhost:5000/api/subcategory/category/${category._id}`
-              );
-              return {
-                ...category,
-                subcategories: subcategoriesResponse.data,
-              };
-            } catch (subError) {
-              return { ...category, subcategories: [] }; // fallback to empty array if subcategories not found
-            }
-          })
-        );
-
-        setCategories(categoriesWithSubcategories);
-      } catch (error) {
-        console.error("Error fetching categories and subcategories:", error);
-      }
-    };
-
     fetchCategories();
   }, []);
 
@@ -60,7 +60,7 @@ const Buyerschoice = () => {
         </h1>
 
         {/* Categories Loop */}
-        {categories.map((category, index) => (
+        {slidercategories.map((category, index) => (
           <div key={index} className="mb-16">
             <h3 className="text-3xl font-semibold text-gray-900 mb-6 text-center">
               {category.name}
