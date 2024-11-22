@@ -55,14 +55,14 @@ const Buyerschoice = () => {
     <div className="py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <h1 className="text-4xl font-extrabold text-gray-800 text-center mb-12">
+        <h1 className="text-3xl font-extrabold text-gray-800 text-center mb-12">
           Explore Our Categories
         </h1>
 
         {/* Categories Loop */}
         {slidercategories.map((category, index) => (
           <div key={index} className="mb-16">
-            <h3 className="text-3xl font-semibold text-gray-900 mb-6 text-center">
+            <h3 className="text-2xl font-extrabold text-gray-900 mb-6 text-center">
               {category.name}
             </h3>
 
@@ -86,14 +86,14 @@ const Buyerschoice = () => {
                   onClick={() =>
                     handleImageClick(subcategory._id, subcategory.name)
                   }
-                  className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:scale-105 cursor-pointer min-w-[300px] max-w-[300px] min-h-[320px] max-h-[320px]" // Fixed width for each subcategory
+                  className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:scale-105 cursor-pointer min-w-[250px] max-w-[250px] min-h-[250px] max-h-[250px]" // Fixed width for each subcategory
                 >
                   {/* Subcategory Image */}
                   {subcategory.image && (
                     <img
                       src={`http://localhost:5000${subcategory.image}`}
                       alt={subcategory.name}
-                      className="w-full h-56 object-cover rounded-t-lg transition-transform duration-300 hover:scale-105"
+                      className="w-full h-40 object-cover rounded-t-lg transition-transform duration-300 hover:scale-105"
                     />
                   )}
 

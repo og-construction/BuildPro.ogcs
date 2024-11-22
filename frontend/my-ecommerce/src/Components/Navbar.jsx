@@ -111,9 +111,9 @@ const Navbar = () => {
             </button>
           </div>
           <div>
-            <span className="text-xs">
+            <span className="text-l">
               Want to become a seller?{" "}
-              <Link to="/seller" className="text-yellow-200 hover:underline">
+              <Link to="/seller" className="text-yellow-200 hover:underline text-l font-semibold">
                 Sign up here
               </Link>
             </span>
@@ -127,7 +127,10 @@ const Navbar = () => {
         </Link>
 
         <div className="flex w-full justify-center items-center gap-10">
+        
+        <div className="w-1/4 md:w-2/6 sm:w-1/3">
             <PincodeToCity />
+            </div>
           <form
             className="relative flex items-center w-full md:w-1/3 mt-4"
             onSubmit={handleSearch}
@@ -158,13 +161,14 @@ const Navbar = () => {
             <FaCartPlus />
           </button>
           <button
-            className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition flex items-center space-x-2"
-            onClick={openWishlist}
-          >
-            <FaHeart />
-          </button>
+              className="bg-transparent text-red-600 p-3 rounded-md hover:bg-red-100 transition flex items-center  "
+              onClick={openWishlist}
+              aria-label="Wishlist"
+                  >
+                <FaHeart className="text-2xl" />
+              </button>
           <button
-            className="bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition flex items-center space-x-2"
+            className="bg-gray-600 text-white p-3 rounded-full hover:bg-gray-700 transition flex items-center justify-center"
             onClick={handleAccountMenuClick}
           >
             <FaUser />

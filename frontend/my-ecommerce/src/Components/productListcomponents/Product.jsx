@@ -40,14 +40,13 @@ function Product({ product }) {
         className="w-full h-64 object-cover cursor-pointer hover:opacity-80 transition-opacity duration-300"
         onClick={() => handleNavigateToProductDetails(product._id)}
       />
-      <div className="p-4">
-        <h3 className="text-xl font-semibold text-gray-800">{product.name}</h3>
-        <p className="text-gray-600 text-sm mt-2">{product.description}</p>
-        <p className="mt-2 text-lg font-semibold text-gray-900">
-          Price: ₹{product.price}
-        </p>
-
-        <div className="flex items-center justify-between mt-4">
+ 
+    <div className="p-4">
+        <div className="flex justify-between items-center">
+           
+          <h3 className="text-xl font-semibold text-gray-800">{product.name}</h3>
+          
+          
           <button
             className="bg-pink-500 text-white py-2 px-4 rounded-full hover:bg-pink-600 transition-colors duration-300"
             onClick={() => handleAddToWishlist(product)}
@@ -55,6 +54,14 @@ function Product({ product }) {
             <FaHeart className="text-white" />
           </button>
         </div>
+
+         
+        <p className="text-gray-600 text-sm mt-2">{product.description}</p>
+
+         
+        <p className="mt-2 text-lg font-semibold text-gray-900">
+          Price: ₹{product.price}
+        </p>
       </div>
     </div>
   );

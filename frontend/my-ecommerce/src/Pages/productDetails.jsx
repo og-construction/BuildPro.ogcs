@@ -12,6 +12,7 @@ const ProductDetails = () => {
   const [similarProducts, setSimilarProducts] = useState([]);
   const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1); // Add state for quantity selection
+  const [isInWishlist, setIsInWishlist] = useState(false); // Track if product is in wishlist
 
   const userId = localStorage.getItem("userId");
 
@@ -54,14 +55,27 @@ const ProductDetails = () => {
 
   const handleAddToWishlist = async () => {
     try {
-      await axios.post(`http://localhost:5000/api/wishlist/add`, {
-        userId,
-        productId,
-      });
-      alert("Product added to wishlist");
+      // Toggle the heart icon state
+      if (isInWishlist) {
+        // Remove from wishlist
+        await axios.post(`http://localhost:5000/api/wishlist/remove`, {
+          userId,
+          productId,
+        });
+        alert("Product removed from wishlist");
+        setIsInWishlist(false); // Update state to remove the product
+      } else {
+        // Add to wishlist
+        await axios.post(`http://localhost:5000/api/wishlist/add`, {
+          userId,
+          productId,
+        });
+        alert("Product added to wishlist");
+        setIsInWishlist(true); // Update state to add the product
+      }
     } catch (error) {
-      console.error("Error adding to wishlist:", error);
-      alert("Failed to add to wishlist");
+      console.error("Error managing wishlist:", error);
+      alert("Failed to update wishlist");
     }
   };
 
@@ -111,11 +125,20 @@ const ProductDetails = () => {
                 <h3 className="text-3xl font-bold text-gray-900">
                   {product.name}
                 </h3>
-                <FaRegHeart
-                  onClick={handleAddToWishlist}
-                  className="text-red-600  cursor-pointer"
-                  size={24}
-                />
+                {/* Heart icon that toggles between outline and filled */}
+                {isInWishlist ? (
+                  <FaHeart
+                    onClick={handleAddToWishlist}
+                    className="text-red-600 cursor-pointer"
+                    size={24}
+                  />
+                ) : (
+                  <FaRegHeart
+                    onClick={handleAddToWishlist}
+                    className="text-gray-600 cursor-pointer"
+                    size={24}
+                  />
+                )}
               </div>
               <p className="text-xl font-semibold text-gray-700 mb-4">
                 Price: <span>₹{product.price.toLocaleString()}</span>
