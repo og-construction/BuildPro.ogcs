@@ -11,7 +11,7 @@ const Checkout = () => {
         addressLine2: '',
         landmark: '',
         townCity: '',
-        state: 'Maharashtra', // Default state
+        state: 'Maharashtra', 
         paymentMethod: "card", 
     });
 
@@ -19,9 +19,7 @@ const Checkout = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handlePaymentChange = (e) => {
-        setFormData({ ...formData, paymentMethod: e.target.value });
-      };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
