@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaRegHeart } from "react-icons/fa"; // Importing heart icon for wishlist
-import { FaHeart } from 'react-icons/fa';  
+import { FaHeart, FaRegHeart } from "react-icons/fa"; // Importing heart icon for wishlist
 import { useNavigate, useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -10,6 +9,8 @@ import AboutCompany from "../Components/productListcomponents/companyContent";
 import bannerImage from '../Components/Assets/banner.jpg'; 
 import bannerImage1 from '../Components/Assets/banner1.jpg'; 
 import bannerImage2 from '../Components/Assets/banner2.jpg'; 
+import { generatePDF } from "../utils/productcompare";
+import ProductwithCompare from "../Components/productListcomponents/ProductwithCompare";
 
 
 const ProductDetails = () => {
@@ -130,6 +131,19 @@ const ProductDetails = () => {
       setQuantity(quantity - 1);
     }
   };
+  let onClickcompareProduct = (secondproduct) => {
+    // Create copies of the products
+    let fproduct = { ...product };
+    let setProduct = { ...secondproduct };
+
+    // Prepend 'http://localhost:5000' to the image URLs
+    fproduct.image = `http://localhost:5000${fproduct.image}`;
+    setProduct.image = `http://localhost:5000${setProduct.image}`;
+
+    // Now pass the updated product objects to generatePDF
+    generatePDF(fproduct, setProduct);
+  };
+
 
   return (
     <div className="container mx-auto px-4 py-8 mt-24">
@@ -257,7 +271,7 @@ const ProductDetails = () => {
             {similarProducts.length > 0 ? (
               <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-10">
                 {similarProducts.map((similarProduct) => (
-                  <Product key={similarProduct._id} product={similarProduct} />
+                  <ProductwithCompare key={similarProduct._id} product={similarProduct} onClickcompareProduct={onClickcompareProduct} />
                 ))}
               </div>
             ) : (
