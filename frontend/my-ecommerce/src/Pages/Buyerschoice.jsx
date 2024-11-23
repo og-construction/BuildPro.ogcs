@@ -6,6 +6,7 @@ import { Autoplay, Pagination } from "swiper/modules"; // Import Pagination modu
 import { Swiper, SwiperSlide } from "swiper/react"; // Import Swiper and SwiperSlide
 import AboutCompany from "../Components/productListcomponents/companyContent";
 import axiosInstance from "./axiosInstance";
+import styles from "../styles/customscrollbar.module.css"
 
 const Buyerschoice = () => {
   const [slidercategories, setSliderCategories] = useState([]);
@@ -34,8 +35,6 @@ const Buyerschoice = () => {
           }
         })
       );
-      console.log(categoriesWithSubcategories, "categoriesWithSubcategories");
-
       setSliderCategories(categoriesWithSubcategories);
     } catch (error) {
       console.error("Error fetching categories and subcategories:", error);
@@ -53,11 +52,58 @@ const Buyerschoice = () => {
 
   return (
     <div className="py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+      <div >
         {/* Header Section */}
         <h1 className="text-3xl font-extrabold text-gray-800 text-center mb-12">
           Explore Our Categories
         </h1>
+        {/* Box Code */}
+
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {boxcategories.map((category) => (
+            <div
+              key={category._id}
+              className={`border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition p-4 overflow-auto min-h-[600px] max-h-[600px] ${styles['custom-scrollbar']}`}
+            >
+              <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                {category.name}
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {category.subcategories.map((subcategory) => (
+                  <div
+                    key={subcategory._id}
+                    className="cursor-pointer bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:shadow-md transition p-3 flex flex-col items-center"
+                    onClick={() => handleImageClick(subcategory._id)}
+                  >
+                    {subcategory.image ? (
+                      <img
+                        src={`http://localhost:5000${subcategory.image}`}
+                        alt={subcategory.name}
+                        className="w-20 h-20 object-cover rounded-full mb-2"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+                        No Image
+                      </div>
+                    )}
+
+                    <p className="text-sm font-medium text-gray-700 text-center">
+                      {subcategory.name}
+                    </p>
+
+                    {subcategory.description && (
+                      <p className="text-xs text-gray-500 text-center mt-1">
+                        {subcategory.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div> */}
+
 
         {/* Categories Loop */}
         {slidercategories.map((category, index) => (
