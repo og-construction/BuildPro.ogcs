@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "./Assets/buillogo6.png";
 import LoginDialog from "./LoginDialog";
 import PincodeToCity from "./Location";
+import PaymentComponent from "./paymentComponent";
 
 const Navbar = () => {
   const [isLoginDialogVisible, setIsLoginDialogVisible] = useState(false);
@@ -127,10 +128,10 @@ const Navbar = () => {
         </Link>
 
         <div className="flex w-full justify-center items-center gap-10">
-        
-        <div className="w-1/4 md:w-2/6 sm:w-1/3">
+
+          <div className="w-1/4 md:w-2/6 sm:w-1/3">
             <PincodeToCity />
-            </div>
+          </div>
           <form
             className="relative flex items-center w-full md:w-1/3 mt-4"
             onSubmit={handleSearch}
@@ -161,12 +162,12 @@ const Navbar = () => {
             <FaCartPlus />
           </button>
           <button
-              className="bg-transparent text-red-600 p-3 rounded-md hover:bg-red-100 transition flex items-center  "
-              onClick={openWishlist}
-              aria-label="Wishlist"
-                  >
-                <FaHeart className="text-2xl" />
-              </button>
+            className="bg-transparent text-red-600 p-3 rounded-md hover:bg-red-100 transition flex items-center  "
+            onClick={openWishlist}
+            aria-label="Wishlist"
+          >
+            <FaHeart className="text-2xl" />
+          </button>
           <button
             className="bg-gray-600 text-white p-3 rounded-full hover:bg-gray-700 transition flex items-center justify-center"
             onClick={handleAccountMenuClick}
