@@ -118,7 +118,7 @@ const ProductDetails = () => {
     setProduct.image = `http://localhost:5000${setProduct.image}`;
 
     // Now pass the updated product objects to generatePDF
-    generatePDF(fproduct, setProduct);
+    generatePDF(fproduct, setProduct,fproduct,fproduct);
   };
 
 
