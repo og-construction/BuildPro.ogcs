@@ -6,6 +6,8 @@ import Product from "../Components/productListcomponents/Product";
 import AboutCompany from "../Components/productListcomponents/companyContent";
 import ProductwithCompare from "../Components/productListcomponents/ProductwithCompare";
 import { generatePDF } from "../utils/productcompare";
+import ProductComparison from "../Components/ProductComparison";
+import { data } from "../utils/dummydta";
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -44,7 +46,11 @@ const ProductDetails = () => {
             productName
           )}`
         );
-        setSimilarProducts(response.data);
+        if (Array.isArray(response?.data)) {
+          setSimilarProducts(response.data.slice(0, 4));
+        } else {
+          setSimilarProducts([]);
+        }
       } catch (error) {
         console.error("Error fetching similar products:", error);
       }
@@ -118,9 +124,8 @@ const ProductDetails = () => {
     setProduct.image = `http://localhost:5000${setProduct.image}`;
 
     // Now pass the updated product objects to generatePDF
-    generatePDF(fproduct, setProduct,fproduct,fproduct);
+    generatePDF(fproduct, setProduct, fproduct, fproduct);
   };
-
 
   return (
     <div className="container mx-auto px-4 py-8 mt-24">
@@ -226,7 +231,6 @@ const ProductDetails = () => {
               </div>
             </div>
           </div>
-
           <div className="mt-12">
             <h3 className="text-2xl font-semibold mb-4">Specifications:</h3>
             {product.specifications?.length > 0 ? (
@@ -242,19 +246,11 @@ const ProductDetails = () => {
               <p className="text-gray-700">No specifications available.</p>
             )}
           </div>
-          <AboutCompany />
+          {/* {/* <AboutCompany /> */}
           <div className="mt-12">
             <h3 className="text-2xl font-semibold mb-4">Related products</h3>
-            {similarProducts.length > 0 ? (
-              <div className="grid md:grid-cols-3 gap-6">
-                {similarProducts.map((similarProduct) => (
-                  <ProductwithCompare key={similarProduct._id} product={similarProduct} onClickcompareProduct={onClickcompareProduct} />
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-700">No similar products found.</p>
-            )}
           </div>
+          <ProductComparison data={similarProducts} />
         </>
       ) : (
         !error && (
