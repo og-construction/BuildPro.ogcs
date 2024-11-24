@@ -1,0 +1,19 @@
+/* Custom scrollbar styles for the class `.custom-scrollbar` */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px; /* Width of the scrollbar */
+  height: 6px; /* Height of the scrollbar for horizontal scrollbars */
+  background: transparent; /* Transparent background */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Fully transparent track */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent; /* Fully transparent thumb (invisible) */
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}

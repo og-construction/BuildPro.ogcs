@@ -5,23 +5,19 @@ import { FaCartPlus, FaHeart, FaSearch, FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "./Assets/buillogo6.png";
 import LoginDialog from "./LoginDialog";
+import PincodeToCity from "./Location";
+import PaymentComponent from "./paymentComponent";
 
 const Navbar = () => {
   const [isLoginDialogVisible, setIsLoginDialogVisible] = useState(false);
   const [isSignup, setisSignup] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [location, setLocation] = useState("Select your location");
-  const [locations, setLocations] = useState([]);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch available locations (mock data or an API request)
-    const fetchLocations = async () => {
-      const mockLocations = ["Delhi", "Mumbai", "Bangalore", "Chennai"];
-      setLocations(mockLocations);
-    };
 
     // Get user's current location using geolocation API
     const fetchCurrentLocation = async () => {
@@ -38,7 +34,6 @@ const Navbar = () => {
 
               const city =
                 response.data.results[0].components.city || "Unknown City";
-              setLocation(city); // Set default location to the user's city
             } catch (error) {
               console.error("Error fetching geolocation:", error);
             }
@@ -52,7 +47,6 @@ const Navbar = () => {
       }
     };
 
-    fetchLocations();
     fetchCurrentLocation();
   }, []);
 
@@ -118,9 +112,9 @@ const Navbar = () => {
             </button>
           </div>
           <div>
-            <span className="text-xs">
+            <span className="text-l">
               Want to become a seller?{" "}
-              <Link to="/seller" className="text-yellow-200 hover:underline">
+              <Link to="/seller" className="text-yellow-200 hover:underline text-l font-semibold">
                 Sign up here
               </Link>
             </span>
@@ -133,26 +127,11 @@ const Navbar = () => {
           <img src={logo} alt="Logo" className="h-12" />
         </Link>
 
-        <div className="flex w-full justify-center items-center gap-4">
-          <div className="relative w-48">
-            <FormControl className="w-full">
-              <InputLabel>Location</InputLabel>
-              <Select
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                label="Location"
-                size="small"
-                className="rounded-md"
-              >
-                {locations.map((loc, index) => (
-                  <MenuItem key={index} value={loc}>
-                    {loc}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
+        <div className="flex w-full justify-center items-center gap-10">
 
+          <div className="w-1/4 md:w-2/6 sm:w-1/3">
+            <PincodeToCity />
+          </div>
           <form
             className="relative flex items-center w-full md:w-1/3 mt-4"
             onSubmit={handleSearch}
@@ -183,13 +162,14 @@ const Navbar = () => {
             <FaCartPlus />
           </button>
           <button
-            className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition flex items-center space-x-2"
+            className="bg-transparent text-red-600 p-3 rounded-md hover:bg-red-100 transition flex items-center  "
             onClick={openWishlist}
+            aria-label="Wishlist"
           >
-            <FaHeart />
+            <FaHeart className="text-2xl" />
           </button>
           <button
-            className="bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition flex items-center space-x-2"
+            className="bg-gray-600 text-white p-3 rounded-full hover:bg-gray-700 transition flex items-center justify-center"
             onClick={handleAccountMenuClick}
           >
             <FaUser />

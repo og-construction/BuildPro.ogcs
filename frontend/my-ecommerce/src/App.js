@@ -13,12 +13,14 @@ import ProductList from './Pages/ProductList.jsx';
 import ProductDetails from './Pages/productDetails.jsx'; // Corrected import
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ProductComparison from './Components/ProductComparison.jsx';
 
 function App() {
   return (
     <Router>
-    <ToastContainer/>
+      <ToastContainer />
       <div>
+        {/* <ProductComparison /> */}
         <Navbar />
         <Routes>
           <Route

@@ -1,9 +1,9 @@
 import { jsPDF } from "jspdf";
-import "jspdf-autotable"; // Import the autoTable plugin
+import "jspdf-autotable";  // Import the autoTable plugin
+export const generatePDF = (product1, product2) => {
+    console.log(product1, product2);
 
-export const generatePDF = (product1, product2, product3, product4) => {
-    console.log(product1, product2, product3, product4);
-
+    // Utility function to convert image URLs to Base64
     const toBase64 = (url) =>
         new Promise((resolve, reject) => {
             const img = new Image();
@@ -20,78 +20,67 @@ export const generatePDF = (product1, product2, product3, product4) => {
             img.src = url;
         });
 
+    // Load images as Base64
     Promise.all([
         toBase64(product1.image),
         toBase64(product2.image),
-        toBase64(product3.image),
-        toBase64(product4.image),
-    ]).then(([product1Image, product2Image, product3Image, product4Image]) => {
-        // Create a wider PDF (e.g., A4 landscape orientation)
-        const doc = new jsPDF({
-            orientation: "landscape", // Switch to landscape
-            unit: "mm", // Measurement unit
-            format: "a4", // A4 size
-        });
+    ]).then(([product1Image, product2Image]) => {
+        const doc = new jsPDF();
 
         // Set font and title for the PDF
         doc.setFont("helvetica", "normal");
         doc.setFontSize(16);
-        doc.text("Exciting Product Showdown!", 148.5, 20, { align: "center" }); // Centered on landscape A4
+        doc.text("Exciting Product Showdown!", 105, 20, { align: "center" });
 
         // Add product images above the table
         const imageYPosition = 30; // Position of the images in the PDF
-        doc.addImage(product1Image, "JPEG", 60, imageYPosition, 40, 40); // Product 1
-        doc.addImage(product2Image, "JPEG", 110, imageYPosition, 40, 40); // Product 2
-        doc.addImage(product3Image, "JPEG", 160, imageYPosition, 40, 40); // Product 3
-        doc.addImage(product4Image, "JPEG", 220, imageYPosition, 40, 40); // Product 4
+        doc.addImage(product1Image, "JPEG", 90, imageYPosition, 40, 40); // Move Product 1 image right
+        doc.addImage(product2Image, "JPEG", 150, imageYPosition, 40, 40); // Product 2 image
 
         // Create table headers
-        const headers = ["Attribute", product1.name, product2.name, product3.name, product4.name];
+        const headers = ["Attribute", product1.name, product2.name];
 
         // Add rows to the table, including specifications
         const rows = [
-            ["Name", product1.name, product2.name, product3.name, product4.name],
-            ["Description", product1.description, product2.description, product3.description, product4.description],
-            ["Price", `Rs.${product1.price}`, `Rs.${product2.price}`, `Rs.${product3.price}`, `Rs.${product4.price}`],
-            ["Size", product1.size, product2.size, product3.size, product4.size],
-            ["Quantity", product1.quantity, product2.quantity, product3.quantity, product4.quantity],
-            ["Category", product1.category, product2.category, product3.category, product4.category],
-            ["Subcategory", product1.subcategory, product2.subcategory, product3.subcategory, product4.subcategory],
-            ["Seller", 
-                product1.seller ? product1.seller : "Not Available", 
-                product2.seller ? product2.seller : "Not Available",
-                product3.seller ? product3.seller : "Not Available",
-                product4.seller ? product4.seller : "Not Available"],
-            ["Total Ratings", product1.totalratings, product2.totalratings, product3.totalratings, product4.totalratings],
+            ["Name", product1.name, product2.name],
+            ["Description", product1.description, product2.description],
+            ["Price", `Rs.${product1.price}`, `Rs.${product2.price}`],
+            ["Size", product1.size, product2.size],
+            ["Quantity", product1.quantity, product2.quantity],
+            ["Category", product1.category, product2.category],
+            ["Subcategory", product1.subcategory, product2.subcategory],
+            ["Seller", product1.seller ? product1.seller : "Not Available", product2.seller ? product2.seller : "Not Available"],
+            ["Total Ratings", product1.totalratings, product2.totalratings],
             ["Specifications",
                 product1.specifications.length > 0 ? product1.specifications.join(", ") : "Not Available",
-                product2.specifications.length > 0 ? product2.specifications.join(", ") : "Not Available",
-                product3.specifications.length > 0 ? product3.specifications.join(", ") : "Not Available",
-                product4.specifications.length > 0 ? product4.specifications.join(", ") : "Not Available",
+                product2.specifications.length > 0 ? product2.specifications.join(", ") : "Not Available"
             ],
         ];
+        // Table dimensions
+        const tableWidth = 180;
+        const x = 20;
+        const y = 80; // Start the table below the images
 
-        // Draw the table
+        // Draw the table header and body
         doc.autoTable({
-            startY: 80,
+            startY: y,
             head: [headers],
             body: rows,
             theme: "grid",
             columnStyles: {
-                0: { cellWidth: 50 }, // Adjust column width for wider layout
-                1: { cellWidth: 50 },
-                2: { cellWidth: 50 },
-                3: { cellWidth: 50 },
-                4: { cellWidth: 50 },
+                0: { cellWidth: 60 },
+                1: { cellWidth: 60 },
+                2: { cellWidth: 60 }
             },
-            margin: { top: 30, left: 10 },
+            margin: { top: 30, left: 20 },
+            tableWidth,
             styles: { overflow: "linebreak", cellWidth: "auto" },
         });
 
         // Save the PDF
         doc.save("product_comparison.pdf");
     }).catch((error) => {
-        console.log(error, 'error');
+        console.log(error,'error');
         alert("Error loading images. Please try again.");
     });
 };

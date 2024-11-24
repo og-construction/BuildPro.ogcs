@@ -6,7 +6,7 @@ import VerifyOtpModal from './VerifyOtpModal';
 const CreateAccountForm = () => {
   // OTP Dialog States
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [emailsent, setemailsent] = useState("")
+  const [emailsent, setemailsent] = useState("");
   const handleOpenDialog = () => setIsDialogOpen(true);
   const handleCloseDialog = () => setIsDialogOpen(false);
 
@@ -15,7 +15,7 @@ const CreateAccountForm = () => {
     name: '',
     email: '',
     mobile: '',
-    companyName:"",
+    companyName: '',
     street: '', // Add street
     city: '', // Add city
     state: '', // Add state
@@ -23,8 +23,9 @@ const CreateAccountForm = () => {
     postalCode: '', // Add postal code
     password: '',
     confirmPassword: '',
-    role: 'Sale By Seller', // Default role
+    role: 'Sale By Seller', // Default type
   });
+
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
@@ -34,33 +35,37 @@ const CreateAccountForm = () => {
       [name]: value
     });
 
-    if (name == 'email') {
-      setemailsent(value)
+    if (name === 'email') {
+      setemailsent(value);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
       setErrorMessage("Passwords do not match");
       return;
     }
-    console.log('fn call');
 
     try {
-      let data = await createSeller(formData); // Directly pass formData
-      if (data?.status == 201) {
-        console.log('inside if');
-        handleOpenDialog()
+      const data = await createSeller(formData); // Directly pass formData
+      console.log(data, "data");
+      localStorage.setItem("sellerId", JSON.stringify(data?.data?.id))
+      if (data?.status === 201) {
+        handleOpenDialog();
       }
-      // navigate('/verify-otp', { state: { email: formData.email } });
       setFormData({
         name: '',
         email: '',
         mobile: '',
-        companyName: "",
-        Address: "",
+        companyName: '',
+        street: '',
+        city: '',
+        state: '',
+        country: '',
+        postalCode: '',
         password: '',
         confirmPassword: '',
         role: 'Sale By Seller',
@@ -137,22 +142,81 @@ const CreateAccountForm = () => {
             </div>
           </div>
 
-          {/* Address and Password Fields Side by Side */}
+          {/* Address Fields */}
           <div className="flex space-x-6">
             <div className="form-group w-1/2">
-              <label htmlFor="Address" className="block text-gray-700">Address</label>
+              <label htmlFor="street" className="block text-gray-700">Street</label>
               <input
                 type="text"
-                id="Address"
-                name="Address"
-                value={formData.Address}
+                id="street"
+                name="street"
+                value={formData.street}
                 onChange={handleChange}
-                placeholder="Enter your address"
+                required
+                placeholder="Enter street address"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            <div className="form-group w-1/2">
+              <label htmlFor="city" className="block text-gray-700">City</label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                required
+                placeholder="Enter city"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          <div className="flex space-x-6">
+            <div className="form-group w-1/2">
+              <label htmlFor="state" className="block text-gray-700">State</label>
+              <input
+                type="text"
+                id="state"
+                name="state"
+                value={formData.state}
+                onChange={handleChange}
+                required
+                placeholder="Enter state"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            <div className="form-group w-1/2">
+              <label htmlFor="country" className="block text-gray-700">Country</label>
+              <input
+                type="text"
+                id="country"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                required
+                placeholder="Enter country"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          <div className="flex space-x-6">
+            <div className="form-group w-1/2">
+              <label htmlFor="postalCode" className="block text-gray-700">Postal Code</label>
+              <input
+                type="text"
+                id="postalCode"
+                name="postalCode"
+                value={formData.postalCode}
+                onChange={handleChange}
+                required
+                placeholder="Enter postal code"
                 className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div className="form-group w-1/2 mt-2">
-              <label htmlFor="role" className="block text-gray-700">Role</label>
+              <label htmlFor="role" className="block text-gray-700">Type</label>
               <select
                 id="role"
                 name="role"
@@ -167,7 +231,7 @@ const CreateAccountForm = () => {
             </div>
           </div>
 
-          {/* Confirm Password and Role Fields Side by Side */}
+          {/* Confirm Password and Password Fields */}
           <div className="flex space-x-6">
             <div className="form-group w-1/2">
               <label htmlFor="confirmPassword" className="block text-gray-700">Confirm Password</label>

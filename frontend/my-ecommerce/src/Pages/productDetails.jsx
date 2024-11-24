@@ -1,9 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaRegHeart } from "react-icons/fa"; // Importing heart icon for wishlist
+import { FaHeart, FaRegHeart } from "react-icons/fa"; // Importing heart icon for wishlist
 import { useNavigate, useParams } from "react-router-dom";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 import Product from "../Components/productListcomponents/Product";
 import AboutCompany from "../Components/productListcomponents/companyContent";
+import bannerImage from '../Components/Assets/banner.jpg'; 
+import bannerImage1 from '../Components/Assets/banner1.jpg'; 
+import bannerImage2 from '../Components/Assets/banner2.jpg'; 
+import { generatePDF } from "../utils/productcompare";
+import ProductwithCompare from "../Components/productListcomponents/ProductwithCompare";
+
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -12,6 +20,7 @@ const ProductDetails = () => {
   const [similarProducts, setSimilarProducts] = useState([]);
   const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1); // Add state for quantity selection
+  const [isInWishlist, setIsInWishlist] = useState(false); // Track if product is in wishlist
 
   const userId = localStorage.getItem("userId");
 
@@ -25,6 +34,7 @@ const ProductDetails = () => {
         if (response.ok) {
           setProduct(data);
           fetchSimilarProducts(data.name);
+          checkIfInWishlist();
         } else {
           setError(data.message || "Failed to fetch product details");
         }
@@ -47,6 +57,22 @@ const ProductDetails = () => {
       }
     };
 
+    const checkIfInWishlist = async () => {
+      try {
+         
+        const response = await axios.get(
+          `http://localhost:5000/api/wishlist/check/${userId}/${productId}`
+        );
+        if (response.data.isInWishlist) {
+          setIsInWishlist(true); 
+        } else {
+          setIsInWishlist(false); 
+        }
+      } catch (error) {
+        console.error("Error checking wishlist status:", error);
+      }
+    };
+
     if (productId) {
       fetchProductDetails();
     }
@@ -54,14 +80,27 @@ const ProductDetails = () => {
 
   const handleAddToWishlist = async () => {
     try {
-      await axios.post(`http://localhost:5000/api/wishlist/add`, {
-        userId,
-        productId,
-      });
-      alert("Product added to wishlist");
+      // Toggle the heart icon state
+      if (isInWishlist) {
+        // Remove from wishlist
+        await axios.post(`http://localhost:5000/api/wishlist/remove`, {
+          userId,
+          productId,
+        });
+        alert("Product removed from wishlist");
+        setIsInWishlist(false); // Update state to remove the product
+      } else {
+        // Add to wishlist
+        await axios.post(`http://localhost:5000/api/wishlist/add`, {
+          userId,
+          productId,
+        });
+        alert("Product added to wishlist");
+        setIsInWishlist(true); // Update state to add the product
+      }
     } catch (error) {
-      console.error("Error adding to wishlist:", error);
-      alert("Failed to add to wishlist");
+      console.error("Error managing wishlist:", error);
+      alert("Failed to update wishlist");
     }
   };
 
@@ -92,6 +131,19 @@ const ProductDetails = () => {
       setQuantity(quantity - 1);
     }
   };
+  let onClickcompareProduct = (secondproduct) => {
+    // Create copies of the products
+    let fproduct = { ...product };
+    let setProduct = { ...secondproduct };
+
+    // Prepend 'http://localhost:5000' to the image URLs
+    fproduct.image = `http://localhost:5000${fproduct.image}`;
+    setProduct.image = `http://localhost:5000${setProduct.image}`;
+
+    // Now pass the updated product objects to generatePDF
+    generatePDF(fproduct, setProduct);
+  };
+
 
   return (
     <div className="container mx-auto px-4 py-8 mt-24">
@@ -111,11 +163,20 @@ const ProductDetails = () => {
                 <h3 className="text-3xl font-bold text-gray-900">
                   {product.name}
                 </h3>
-                <FaRegHeart
-                  onClick={handleAddToWishlist}
-                  className="text-red-600  cursor-pointer"
-                  size={24}
-                />
+                {/* Heart icon that toggles between outline and filled */}
+                {isInWishlist ? (
+                  <FaHeart
+                    onClick={handleAddToWishlist}
+                    className="text-red-600 cursor-pointer"
+                    size={24}
+                  />
+                ) : (
+                  <FaRegHeart
+                    onClick={handleAddToWishlist}
+                    className="text-gray-600 cursor-pointer"
+                    size={24}
+                  />
+                )}
               </div>
               <p className="text-xl font-semibold text-gray-700 mb-4">
                 Price: <span>₹{product.price.toLocaleString()}</span>
@@ -204,25 +265,64 @@ const ProductDetails = () => {
               <p className="text-gray-700">No specifications available.</p>
             )}
           </div>
-          <AboutCompany />
+          
           <div className="mt-12">
-            <h3 className="text-2xl font-semibold mb-4">Related products</h3>
+            <h3 className="text-2xl font-semibold mb-4">Similar Products</h3>
             {similarProducts.length > 0 ? (
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-10">
                 {similarProducts.map((similarProduct) => (
-                  <Product key={similarProduct._id} product={similarProduct} />
+                  <ProductwithCompare key={similarProduct._id} product={similarProduct} onClickcompareProduct={onClickcompareProduct} />
                 ))}
               </div>
             ) : (
               <p className="text-gray-700">No similar products found.</p>
             )}
           </div>
-        </>
-      ) : (
-        !error && (
-          <p className="text-center text-xl">Loading product details...</p>
-        )
-      )}
+       
+
+     {/* Banner Slider */}
+     <div className="mt-12">
+     <h3 className="text-2xl font-semibold mb-4">BuildPro</h3>
+     <Swiper
+       spaceBetween={10}
+       slidesPerView={1}
+       navigation
+       pagination={{ clickable: true }}
+       loop
+      
+        
+     >
+       <SwiperSlide>
+         <img
+           src= {bannerImage}
+           alt="Promo Banner 1"
+           className="w-full h-auto object-cover"
+         />
+       </SwiperSlide>
+       <SwiperSlide>
+         <img
+           src={bannerImage1}
+           alt="Promo Banner 2"
+           className="w-full h-auto object-cover"
+         />
+       </SwiperSlide>
+       <SwiperSlide>
+         <img
+           src={bannerImage2}
+           alt="Promo Banner 3"
+           className="w-full h-auto object-cover"
+         />
+       </SwiperSlide>
+     </Swiper>
+   </div>
+   
+ </>
+) : (
+ !error && (
+   <p className="text-center text-xl">Loading product details...</p>
+ )
+)}
+       <AboutCompany />
     </div>
   );
 };
