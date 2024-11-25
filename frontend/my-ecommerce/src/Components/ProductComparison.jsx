@@ -47,8 +47,7 @@ function ProductComparison({ data }) {
 
       {/* Products Section */}
       <div
-        className={`grid overflow-x-auto ${gridCols} gap-8 mb-8`}
-        style={{ paddingLeft: featureColumnWidth }}
+        className={`grid overflow-x-auto ${gridCols} gap-8 mb-8 pl-[150px]`}
       >
         {data.map((product) => (
           <Product key={product._id} product={product} />
@@ -63,14 +62,11 @@ function ProductComparison({ data }) {
         Download Comparison
       </div>
       <div className="overflow-x-auto shadow-lg rounded-lg bg-white">
-        <table className="table-auto w-full border-collapse text-left text-sm" style={{ tableLayout: "fixed" }}>
+        <table className="table-auto w-full border-collapse text-left text-sm">
           <thead className="bg-indigo-600 text-white">
             <tr>
               {/* Fixed width for Feature column */}
-              <th
-                ref={featureColumnRef}
-                className="border border-gray-300 px-6 py-3 font-semibold w-[150px]"
-              >
+              <th className="border border-gray-300 px-6 py-3 font-semibold w-[150px]">
                 Feature
               </th>
 
@@ -88,7 +84,7 @@ function ProductComparison({ data }) {
           </thead>
 
           <tbody>
-            {[ 
+            {[
               ["Description", ...data.map((p) => p.description)],
               ["Price", ...data.map((p) => `Rs. ${p.price}`)],
               ["Size", ...data.map((p) => p.size)],
