@@ -2,16 +2,15 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa"; // Importing heart icon for wishlist
 import { useNavigate, useParams } from "react-router-dom";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 import Product from "../Components/productListcomponents/Product";
 import AboutCompany from "../Components/productListcomponents/companyContent";
-import bannerImage from '../Components/Assets/banner.jpg'; 
-import bannerImage1 from '../Components/Assets/banner1.jpg'; 
-import bannerImage2 from '../Components/Assets/banner2.jpg'; 
+import bannerImage from "../Components/Assets/banner.jpg";
+import bannerImage1 from "../Components/Assets/banner1.jpg";
+import bannerImage2 from "../Components/Assets/banner2.jpg";
 import { generatePDF } from "../utils/productcompare";
 import ProductwithCompare from "../Components/productListcomponents/ProductwithCompare";
-
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -21,8 +20,26 @@ const ProductDetails = () => {
   const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1); // Add state for quantity selection
   const [isInWishlist, setIsInWishlist] = useState(false); // Track if product is in wishlist
-
-  const userId = localStorage.getItem("userId");
+  const [wishlistItems, setwishlistItems] = useState([]);
+  const fetchWishlist = async () => {
+    try {
+      const userId = localStorage.getItem("userId"); // Assuming userId is stored in localStorage
+      const response = await axios.get(
+        `http://localhost:5000/api/wishlist/get-wishlist/${userId}`
+      );
+      let data = response?.data?.items || [];
+      let isProductExist = data.some((p) => p?.productId?._id == productId);
+      console.log(isProductExist, "isProductExist", productId);
+      if (isProductExist) {
+        setIsInWishlist(true);
+      } else {
+        setIsInWishlist(false);
+      }
+      setwishlistItems(data);
+    } catch (error) {
+      console.error("Error fetching wishlist:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -34,7 +51,6 @@ const ProductDetails = () => {
         if (response.ok) {
           setProduct(data);
           fetchSimilarProducts(data.name);
-          checkIfInWishlist();
         } else {
           setError(data.message || "Failed to fetch product details");
         }
@@ -57,28 +73,17 @@ const ProductDetails = () => {
       }
     };
 
-    const checkIfInWishlist = async () => {
-      try {
-         
-        const response = await axios.get(
-          `http://localhost:5000/api/wishlist/check/${userId}/${productId}`
-        );
-        if (response.data.isInWishlist) {
-          setIsInWishlist(true); 
-        } else {
-          setIsInWishlist(false); 
-        }
-      } catch (error) {
-        console.error("Error checking wishlist status:", error);
-      }
-    };
+    fetchWishlist();
 
     if (productId) {
       fetchProductDetails();
     }
   }, [productId]);
 
+  const userId = localStorage.getItem("userId");
   const handleAddToWishlist = async () => {
+    console.log(userId, "userId");
+
     try {
       // Toggle the heart icon state
       if (isInWishlist) {
@@ -143,7 +148,6 @@ const ProductDetails = () => {
     // Now pass the updated product objects to generatePDF
     generatePDF(fproduct, setProduct);
   };
-
 
   return (
     <div className="container mx-auto px-4 py-8 mt-24">
@@ -265,64 +269,64 @@ const ProductDetails = () => {
               <p className="text-gray-700">No specifications available.</p>
             )}
           </div>
-          
+
           <div className="mt-12">
             <h3 className="text-2xl font-semibold mb-4">Similar Products</h3>
             {similarProducts.length > 0 ? (
               <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-10">
                 {similarProducts.map((similarProduct) => (
-                  <ProductwithCompare key={similarProduct._id} product={similarProduct} onClickcompareProduct={onClickcompareProduct} />
+                  <ProductwithCompare
+                    key={similarProduct._id}
+                    product={similarProduct}
+                    onClickcompareProduct={onClickcompareProduct}
+                  />
                 ))}
               </div>
             ) : (
               <p className="text-gray-700">No similar products found.</p>
             )}
           </div>
-       
 
-     {/* Banner Slider */}
-     <div className="mt-12">
-     <h3 className="text-2xl font-semibold mb-4">BuildPro</h3>
-     <Swiper
-       spaceBetween={10}
-       slidesPerView={1}
-       navigation
-       pagination={{ clickable: true }}
-       loop
-      
-        
-     >
-       <SwiperSlide>
-         <img
-           src= {bannerImage}
-           alt="Promo Banner 1"
-           className="w-full h-auto object-cover"
-         />
-       </SwiperSlide>
-       <SwiperSlide>
-         <img
-           src={bannerImage1}
-           alt="Promo Banner 2"
-           className="w-full h-auto object-cover"
-         />
-       </SwiperSlide>
-       <SwiperSlide>
-         <img
-           src={bannerImage2}
-           alt="Promo Banner 3"
-           className="w-full h-auto object-cover"
-         />
-       </SwiperSlide>
-     </Swiper>
-   </div>
-   
- </>
-) : (
- !error && (
-   <p className="text-center text-xl">Loading product details...</p>
- )
-)}
-       <AboutCompany />
+          {/* Banner Slider */}
+          <div className="mt-12">
+            <h3 className="text-2xl font-semibold mb-4">BuildPro</h3>
+            <Swiper
+              spaceBetween={10}
+              slidesPerView={1}
+              navigation
+              pagination={{ clickable: true }}
+              loop
+            >
+              <SwiperSlide>
+                <img
+                  src={bannerImage}
+                  alt="Promo Banner 1"
+                  className="w-full h-auto object-cover"
+                />
+              </SwiperSlide>
+              <SwiperSlide>
+                <img
+                  src={bannerImage1}
+                  alt="Promo Banner 2"
+                  className="w-full h-auto object-cover"
+                />
+              </SwiperSlide>
+              <SwiperSlide>
+                <img
+                  src={bannerImage2}
+                  alt="Promo Banner 3"
+                  className="w-full h-auto object-cover"
+                />
+              </SwiperSlide>
+            </Swiper>
+          </div>
+        </>
+      ) : (
+        !error && (
+          <p className="text-center text-xl">Loading product details...</p>
+        )
+      )}
+      <AboutCompany />
     </div>
   );
 };
