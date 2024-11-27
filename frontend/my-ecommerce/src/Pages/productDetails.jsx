@@ -10,7 +10,8 @@ import bannerImage from "../Components/Assets/banner.jpg";
 import bannerImage1 from "../Components/Assets/banner1.jpg";
 import bannerImage2 from "../Components/Assets/banner2.jpg";
 import { generatePDF } from "../utils/productcompare";
-import ProductwithCompare from "../Components/productListcomponents/ProductwithCompare";
+import ProductComparison from "../Components/ProductComparison";
+import { data } from "../utils/dummydta";
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -67,7 +68,11 @@ const ProductDetails = () => {
             productName
           )}`
         );
-        setSimilarProducts(response.data);
+        if (Array.isArray(response?.data)) {
+          setSimilarProducts(response.data.slice(0, 4));
+        } else {
+          setSimilarProducts([]);
+        }
       } catch (error) {
         console.error("Error fetching similar products:", error);
       }
@@ -146,7 +151,7 @@ const ProductDetails = () => {
     setProduct.image = `http://localhost:5000${setProduct.image}`;
 
     // Now pass the updated product objects to generatePDF
-    generatePDF(fproduct, setProduct);
+    generatePDF(fproduct, setProduct, fproduct, fproduct);
   };
 
   return (
@@ -255,7 +260,6 @@ const ProductDetails = () => {
               </div>
             </div>
           </div>
-
           <div className="mt-12">
             <h3 className="text-2xl font-semibold mb-4">Specifications:</h3>
             {product.specifications?.length > 0 ? (
@@ -271,57 +275,11 @@ const ProductDetails = () => {
               <p className="text-gray-700">No specifications available.</p>
             )}
           </div>
-
+          {/* {/* <AboutCompany /> */}
           <div className="mt-12">
-            <h3 className="text-2xl font-semibold mb-4">Similar Products</h3>
-            {similarProducts.length > 0 ? (
-              <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-10">
-                {similarProducts.map((similarProduct) => (
-                  <ProductwithCompare
-                    key={similarProduct._id}
-                    product={similarProduct}
-                    onClickcompareProduct={onClickcompareProduct}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-700">No similar products found.</p>
-            )}
+            <h3 className="text-2xl font-semibold mb-4">Related products</h3>
           </div>
-
-          {/* Banner Slider */}
-          <div className="mt-12">
-            <h3 className="text-2xl font-semibold mb-4">BuildPro</h3>
-            <Swiper
-              spaceBetween={10}
-              slidesPerView={1}
-              navigation
-              pagination={{ clickable: true }}
-              loop
-            >
-              <SwiperSlide>
-                <img
-                  src={bannerImage}
-                  alt="Promo Banner 1"
-                  className="w-full h-auto object-cover"
-                />
-              </SwiperSlide>
-              <SwiperSlide>
-                <img
-                  src={bannerImage1}
-                  alt="Promo Banner 2"
-                  className="w-full h-auto object-cover"
-                />
-              </SwiperSlide>
-              <SwiperSlide>
-                <img
-                  src={bannerImage2}
-                  alt="Promo Banner 3"
-                  className="w-full h-auto object-cover"
-                />
-              </SwiperSlide>
-            </Swiper>
-          </div>
+          <ProductComparison data={similarProducts} />
         </>
       ) : (
         !error && (
