@@ -4,19 +4,32 @@ const { validateMongodbId } = require('./CategoryCtrl');
 // Add to Wishlist
 const addToWishlist = async (req, res) => {
   const { userId, productId } = req.body;
-  validateMongodbId(userId);
 
   try {
-    const wishlist = await Wishlist.findOneAndUpdate(
+    // Validate MongoDB ID if necessary
+    validateMongodbId(userId);
+
+    // Check if the product is already in the wishlist
+    const wishlist = await Wishlist.findOne({ userId });
+
+    if (wishlist && wishlist.items.some((item) => item.productId.toString() === productId)) {
+      return res.status(400).json({ message: "Product is already in the wishlist." });
+    }
+
+    // Add the product to the wishlist if not already present
+    const updatedWishlist = await Wishlist.findOneAndUpdate(
       { userId },
-      { $addToSet: { items: { productId } } },
+      { $addToSet: { items: { productId } } }, // $addToSet ensures no duplicates
       { new: true, upsert: true }
     ).populate('items.productId');
-    res.status(200).json(wishlist);
+
+    res.status(200).json(updatedWishlist);
   } catch (error) {
-    res.status(500).json({ message: 'Error adding to wishlist', error });
+    console.error("Error adding to wishlist:", error);
+    res.status(500).json({ message: "Error adding to wishlist", error });
   }
 };
+
 
 // Get a user's Wishlist
 const getWishlist = async (req, res) => {

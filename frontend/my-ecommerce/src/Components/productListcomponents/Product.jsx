@@ -25,8 +25,13 @@ function Product({ product }) {
         alert("Failed to add to wishlist.");
       }
     } catch (error) {
-      console.error("Error adding to wishlist:", error);
-      alert("Error adding to wishlist.");
+      if (error.response && error.response.status === 400) {
+        // Specific handling for already added to wishlist
+        alert(error.response.data.message || "This product is already in your wishlist.");
+      } else {
+        console.error("Error adding to wishlist:", error);
+        alert("Error adding to wishlist.");
+      }
     }
   };
   return (
