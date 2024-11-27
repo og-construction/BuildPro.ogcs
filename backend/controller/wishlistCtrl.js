@@ -6,6 +6,7 @@ const addToWishlist = async (req, res) => {
   const { userId, productId } = req.body;
   validateMongodbId(userId);
 
+  
   try {
     const wishlist = await Wishlist.findOneAndUpdate(
       { userId },
@@ -33,17 +34,56 @@ const getWishlist = async (req, res) => {
 };
 
 // Delete a user's Wishlist
+// In your backend controller (e.g., `wishlistCtrl.js`)
 const deleteWishlist = async (req, res) => {
   const { userId } = req.params;
+  const { productId } = req.body; // Ensure this is being passed in the request body
+
   validateMongodbId(userId);
 
   try {
-    const wishlist = await Wishlist.findOneAndDelete({ userId });
-    if (!wishlist) return res.status(404).json({ message: 'Wishlist not found' });
-    res.status(200).json({ message: 'Wishlist deleted successfully' });
+    const wishlist = await Wishlist.findOne({ userId });
+
+    if (!wishlist) {
+      return res.status(404).json({ message: 'Wishlist not found' });
+    }
+
+    // Remove the product from the wishlist
+    const updatedWishlist = await Wishlist.findOneAndUpdate(
+      { userId },
+      { $pull: { items: { productId } } }, // This removes the product with the given productId
+      { new: true }
+    ).populate('items.productId');
+
+    if (!updatedWishlist) {
+      return res.status(404).json({ message: 'Failed to remove item from wishlist' });
+    }
+
+    res.status(200).json(updatedWishlist);
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting wishlist', error });
+    res.status(500).json({ message: 'Error deleting item from wishlist', error });
   }
 };
 
-module.exports = {addToWishlist, getWishlist,deleteWishlist}
+
+ // Remove from Wishlist
+const removeFromWishlist = async (req, res) => {
+  const { userId, productId } = req.body;
+  validateMongodbId(userId);
+
+  try {
+    // Remove product from the wishlist items array
+    const wishlist = await Wishlist.findOneAndUpdate(
+      { userId },
+      { $pull: { items: { productId } } },
+      { new: true }
+    ).populate('items.productId');
+
+    if (!wishlist) return res.status(404).json({ message: 'Wishlist not found' });
+    res.status(200).json(wishlist);
+  } catch (error) {
+    res.status(500).json({ message: 'Error removing from wishlist', error });
+  }
+};
+
+module.exports = { addToWishlist, getWishlist, deleteWishlist, removeFromWishlist };

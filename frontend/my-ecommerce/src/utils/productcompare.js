@@ -1,86 +1,135 @@
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";  // Import the autoTable plugin
-export const generatePDF = (product1, product2) => {
-    console.log(product1, product2);
+import "jspdf-autotable"; // Import the autoTable plugin
 
-    // Utility function to convert image URLs to Base64
-    const toBase64 = (url) =>
-        new Promise((resolve, reject) => {
-            const img = new Image();
-            img.crossOrigin = "Anonymous"; // Enable CORS if the image is hosted externally
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0);
-                resolve(canvas.toDataURL("image/jpeg"));
-            };
-            img.onerror = reject;
-            img.src = url;
-        });
+export const generatePDF = (...products) => {
+  const toBase64 = (url) =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "Anonymous"; // Enable CORS if the image is hosted externally
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL("image/jpeg"));
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
 
-    // Load images as Base64
-    Promise.all([
-        toBase64(product1.image),
-        toBase64(product2.image),
-    ]).then(([product1Image, product2Image]) => {
-        const doc = new jsPDF();
+  // Dynamically load product images based on the products array length
+  Promise.all(products.map((product) => toBase64(product.image)))
+    .then((productImages) => {
+      const doc = new jsPDF({
+        orientation: "landscape", // Switch to landscape
+        unit: "mm",
+        format: "a4", // A4 size
+      });
 
-        // Set font and title for the PDF
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(16);
-        doc.text("Exciting Product Showdown!", 105, 20, { align: "center" });
+      const pageWidth = doc.internal.pageSize.width;
 
-        // Add product images above the table
-        const imageYPosition = 30; // Position of the images in the PDF
-        doc.addImage(product1Image, "JPEG", 90, imageYPosition, 40, 40); // Move Product 1 image right
-        doc.addImage(product2Image, "JPEG", 150, imageYPosition, 40, 40); // Product 2 image
+      // Title
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("Exciting Product Showdown!", pageWidth / 2, 20, {
+        align: "center",
+      });
 
-        // Create table headers
-        const headers = ["Attribute", product1.name, product2.name];
+      let imageYPosition = 30;
+      let imageWidth = 40;
+      let spacing = 85;
+      let xPos = 110;
+      let addspace = 60;
+      let cellWidth = 70;
+      // Adjust positioning based on number of products
+      if (products.length === 4) {
+        spacing = 15; // Smaller spacing between images
+        cellWidth = 53;
+      } else if (products.length === 3) {
+        spacing = 35; // Medium spacing for 3 products
+        cellWidth = 70;
+      } else if (products.length === 2) {
+        xPos = 70; // Adjust starting X position for 2 products
+        spacing = 85; // Larger spacing for 2 products
+        cellWidth = 105;
+      } else if (products.length === 1) {
+        cellWidth = "auto";
+        xPos = 110; // Position for 1 product
+        spacing = 85; // Larger spacing for 1 product
+      }
 
-        // Add rows to the table, including specifications
-        const rows = [
-            ["Name", product1.name, product2.name],
-            ["Description", product1.description, product2.description],
-            ["Price", `Rs.${product1.price}`, `Rs.${product2.price}`],
-            ["Size", product1.size, product2.size],
-            ["Quantity", product1.quantity, product2.quantity],
-            ["Category", product1.category, product2.category],
-            ["Subcategory", product1.subcategory, product2.subcategory],
-            ["Seller", product1.seller ? product1.seller : "Not Available", product2.seller ? product2.seller : "Not Available"],
-            ["Total Ratings", product1.totalratings, product2.totalratings],
-            ["Specifications",
-                product1.specifications.length > 0 ? product1.specifications.join(", ") : "Not Available",
-                product2.specifications.length > 0 ? product2.specifications.join(", ") : "Not Available"
-            ],
-        ];
-        // Table dimensions
-        const tableWidth = 180;
-        const x = 20;
-        const y = 80; // Start the table below the images
+      // Add images dynamically based on number of products
+      products.forEach((product, index) => {
+        xPos = addspace + index * (imageWidth + spacing); // Dynamically calculate X position
+        doc.addImage(
+          productImages[index],
+          "JPEG",
+          xPos,
+          imageYPosition,
+          imageWidth,
+          imageWidth
+        );
+      });
 
-        // Draw the table header and body
-        doc.autoTable({
-            startY: y,
-            head: [headers],
-            body: rows,
-            theme: "grid",
-            columnStyles: {
-                0: { cellWidth: 60 },
-                1: { cellWidth: 60 },
-                2: { cellWidth: 60 }
-            },
-            margin: { top: 30, left: 20 },
-            tableWidth,
-            styles: { overflow: "linebreak", cellWidth: "auto" },
-        });
+      // Table headers
+      const headers = ["Attribute", ...products.map((product) => product.name)];
 
-        // Save the PDF
-        doc.save("product_comparison.pdf");
-    }).catch((error) => {
-        console.log(error,'error');
-        alert("Error loading images. Please try again.");
+      // Table rows
+      const rows = [
+        ["Name", ...products.map((product) => product.name)],
+        ["Description", ...products.map((product) => product.description)],
+        ["Price", ...products.map((product) => `Rs.${product.price}`)],
+        ["Size", ...products.map((product) => product.size)],
+        ["Quantity", ...products.map((product) => product.quantity)],
+        ["Category", ...products.map((product) => product.category)],
+        ["Subcategory", ...products.map((product) => product.subcategory)],
+        [
+          "Seller",
+          ...products.map((product) => product.seller || "Not Available"),
+        ],
+        ["Total Ratings", ...products.map((product) => product.totalratings)],
+        [
+          "Specifications",
+          ...products.map((product) =>
+            product.specifications.length
+              ? product.specifications
+                  .map((spec) => `${spec.key}: ${spec.value}`)
+                  .join("\n") // Each specification in a new line
+              : "Not Available"
+          ),
+        ],
+      ];
+
+      // Define column width styles
+      const columnStyles = {};
+      columnStyles[0] = { cellWidth: "auto" }; // First column (Attribute) will be dynamic
+      // For the remaining columns, set a fixed width
+      for (let i = 1; i < headers.length; i++) {
+        columnStyles[i] = { cellWidth: cellWidth }; // Fixed width for other columns
+      }
+
+      // Draw table and center it
+      doc.autoTable({
+        startY: imageYPosition + 50,
+        head: [headers],
+        body: rows,
+        theme: "grid",
+        styles: { overflow: "linebreak", halign: "left" },
+        margin: {
+          top: 30,
+          left: (pageWidth - 240) / 2,
+          right: (pageWidth - 240) / 2,
+        }, // Centered table
+        tableWidth: "auto",
+        columnStyles, // Apply the dynamic and fixed column widths
+      });
+
+      // Save PDF
+      doc.save("product_comparison.pdf");
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("Error loading images. Please try again.");
     });
 };
