@@ -6,6 +6,7 @@ const addToWishlist = async (req, res) => {
   const { userId, productId } = req.body;
   validateMongodbId(userId);
 
+  
   try {
     const wishlist = await Wishlist.findOneAndUpdate(
       { userId },
