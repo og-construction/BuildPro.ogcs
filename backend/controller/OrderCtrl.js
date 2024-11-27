@@ -2,6 +2,7 @@ const Order = require('../models/OrderModel');
 const Product = require('../models/productModel');
 const Payment = require('../models/paymentModel');
 const asyncHandler = require('express-async-handler');
+const OrderTracking = require('../models/OrderTrackingModel');
 
 // Create an order
 const createOrder = asyncHandler(async (req, res) => {
@@ -40,9 +41,17 @@ const createOrder = asyncHandler(async (req, res) => {
 
   await newOrder.save();
 
+  // Create tracking records for each seller
+  for (const item of items) {
+    await OrderTracking.create({
+      orderId: newOrder._id,
+      sellerId: item.seller, // Ensure `seller` is passed in `items`
+      statusUpdates: [{ status: 'Pending', timestamp: new Date() }],
+    });
+  }
+
   res.status(201).json({ message: "Order created successfully", orderId: newOrder._id });
 });
-
 
 // Get all orders for a user
 const getUserOrders = asyncHandler(async (req, res) => {
@@ -90,5 +99,5 @@ module.exports = {
   createOrder,
   getUserOrders,
   getOrderById,
-  updateOrderStatus
+  updateOrderStatus,
 };

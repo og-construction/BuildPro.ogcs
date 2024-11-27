@@ -14,6 +14,7 @@ const cart = require('./routes/CartRoute');
 const payment = require('./routes/paymentRoute');
 const wishlist = require('./routes/wishlistRoute'); // Correctly import
 const deliveryCharge = require('./routes/deliveryCharge.js')
+const orderTracking = require('./routes/OrderTrackingRoute.js')
 const bodyParser = require('body-parser');
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const cookieParser = require('cookie-parser');
@@ -95,6 +96,7 @@ app.use('/api/cart', cart);
 app.use('/api/payment', payment);
 app.use('/api/wishlist', wishlist); // Properly set the base path
 app.use('/api/deliverycharge',deliveryCharge)
+app.use('/api/order-tracking',orderTracking)
 // Static File Serving with CORS Headers
 app.use('/uploads', express.static('uploads', {
     setHeaders: (res) => {
