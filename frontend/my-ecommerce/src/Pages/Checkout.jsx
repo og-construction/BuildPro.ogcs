@@ -15,6 +15,8 @@ const Checkout = () => {
         paymentMethod: "card", 
     });
 
+    const [showForm, setShowForm] = useState(false); // Add state for toggling form visibility
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -32,6 +34,16 @@ const Checkout = () => {
         <div>
             <h1 className={Style["page-title"]}>Checkout</h1>
          
+            <div className={Style["shipping-container"]}>
+                {/* Add Address Button */}
+                <button
+                    className={Style["add-address-btn"]}
+                    onClick={() => setShowForm(!showForm)}
+                >
+                    + Add a New Address
+                </button>
+                </div>
+
         <div className={Style["shipping-container"]}>
             <div className={Style["form-section"]}>
                 <h2 className={Style["form-title"]}> Shipping Address</h2>

@@ -2,9 +2,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa"; // Importing heart icon for wishlist
 import { useNavigate, useParams } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 import Product from "../Components/productListcomponents/Product";
 import AboutCompany from "../Components/productListcomponents/companyContent";
-import ProductwithCompare from "../Components/productListcomponents/ProductwithCompare";
+import bannerImage from "../Components/Assets/banner.jpg";
+import bannerImage1 from "../Components/Assets/banner1.jpg";
+import bannerImage2 from "../Components/Assets/banner2.jpg";
 import { generatePDF } from "../utils/productcompare";
 import ProductComparison from "../Components/ProductComparison";
 import { data } from "../utils/dummydta";
@@ -17,8 +21,26 @@ const ProductDetails = () => {
   const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1); // Add state for quantity selection
   const [isInWishlist, setIsInWishlist] = useState(false); // Track if product is in wishlist
-
-  const userId = localStorage.getItem("userId");
+  const [wishlistItems, setwishlistItems] = useState([]);
+  const fetchWishlist = async () => {
+    try {
+      const userId = localStorage.getItem("userId"); // Assuming userId is stored in localStorage
+      const response = await axios.get(
+        `http://localhost:5000/api/wishlist/get-wishlist/${userId}`
+      );
+      let data = response?.data?.items || [];
+      let isProductExist = data.some((p) => p?.productId?._id == productId);
+      console.log(isProductExist, "isProductExist", productId);
+      if (isProductExist) {
+        setIsInWishlist(true);
+      } else {
+        setIsInWishlist(false);
+      }
+      setwishlistItems(data);
+    } catch (error) {
+      console.error("Error fetching wishlist:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -56,12 +78,17 @@ const ProductDetails = () => {
       }
     };
 
+    fetchWishlist();
+
     if (productId) {
       fetchProductDetails();
     }
   }, [productId]);
 
+  const userId = localStorage.getItem("userId");
   const handleAddToWishlist = async () => {
+    console.log(userId, "userId");
+
     try {
       // Toggle the heart icon state
       if (isInWishlist) {
@@ -177,7 +204,9 @@ const ProductDetails = () => {
                   </span>
                 )}
               </p>
-
+              <p className="text-gray-600 mb-2">Stock: { product.stock}</p>
+              <p className="text-gray-600 mb-2">Minimun Quantity: { product.minimunQuantity}</p>
+              <p className="text-gray-600 mb-2">maximum Quantity: { product.maximumQuantity}</p>
               <p className="text-gray-600 mb-4">Category: {product.category}</p>
               <p className="text-gray-600 mb-4">
                 Subcategory: {product.subcategory}
@@ -257,6 +286,7 @@ const ProductDetails = () => {
           <p className="text-center text-xl">Loading product details...</p>
         )
       )}
+      <AboutCompany />
     </div>
   );
 };
