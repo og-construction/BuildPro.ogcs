@@ -1,51 +1,62 @@
-/* ManageProducts.module.css */
-
 /* Overall container */
 .manage-products-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   padding: 20px;
   font-family: Arial, sans-serif;
+  justify-content: space-between;
 }
 
-h2 {
-  margin-bottom: 20px;
-  font-size: 1.5em;
+/* Left Column (Category and Subcategory) */
+.left-column {
+  display: flex;
+  justify-content: space-between; /* Align category and subcategory side by side */
+  width: 30%; /* Adjust as needed */
+  padding-right: 20px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Category container */
 .category-list {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Make the category list take available space */
 }
 
 .category-list h3 {
   font-size: 1.2em;
   margin-bottom: 5px;
+  font-weight: bold;
 }
 
-.category-list p {
-  font-size: 1em;
-  color: #333;
-  cursor: pointer;
+.category-list button {
+  margin-bottom: 10px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #f4f4f4;
+  font-size: 1em;
   transition: background-color 0.3s ease;
-}
-.category-list button{
-  margin-right: 10px;
-  padding: 2px;
-  border: 1px solid #ddd;
+  cursor: pointer;
 }
 
-.category-list p:hover {
+.category-list button.selected {
   background-color: #e0e0e0;
 }
 
-/* Subcategory dropdown */
+.category-list button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Subcategory container */
 .subcategory-list {
+  display: flex;
+  flex-direction: column;
   margin-top: 20px;
+  flex: 1; /* Make the subcategory list take available space */
 }
 
 .subcategory-list h3 {
@@ -67,35 +78,55 @@ h2 {
   background-color: #f4f4f4;
 }
 
-/* Radio button section */
-.radio-buttons {
-  margin-top: 20px;
-}
-
-.radio-buttons label {
-  font-size: 1em;
-  margin-right: 15px;
-  cursor: pointer;
-}
-
-.radio-buttons input[type="radio"] {
-  margin-right: 5px;
+/* Right Column (Add Product Form) */
+.right-column {
+  display: flex;
+  flex-direction: column;
+  width: 65%;  
+  padding-left: 20px;
+  border-left: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Add Product Form */
 .AddProduct {
-  margin-top: 30px;
+  /* margin-top: 30px;
+  padding-top: 20px; */
+  display: flex;
+  flex-direction: column;
   border-top: 1px solid #ddd;
-  padding-top: 20px;
+  max-width: 900px; /* Ensure form width is controlled */
+  margin: 0 auto; /* Center the form */
 }
 
 .AddProduct h3 {
   font-size: 1.5em;
   margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
 }
 
+/* Product Form Inputs */
+.AddProduct input,
+.AddProduct select,
+.AddProduct textarea {
+  padding: 10px;
+  font-size: 1em;
+  width: 100%;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.AddProduct input[type="file"] {
+  padding: 5px;
+}
+
+/* Buttons */
 .AddProduct button {
-  padding: 12px 20px;
+  /* padding: 12px 20px; */
   font-size: 1.1em;
   border: none;
   border-radius: 5px;
@@ -124,4 +155,11 @@ h2 {
 
 .add-product-btn:hover {
   background-color: #45A049;
+}
+
+/* Ensure vertical layout */
+.category-list, .subcategory-list, .AddProduct {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
