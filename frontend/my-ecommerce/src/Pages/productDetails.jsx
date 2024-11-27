@@ -199,7 +199,9 @@ const ProductDetails = () => {
                   </span>
                 )}
               </p>
-
+              <p className="text-gray-600 mb-2">Stock: { product.stock}</p>
+              <p className="text-gray-600 mb-2">Minimun Quantity: { product.minimunQuantity}</p>
+              <p className="text-gray-600 mb-2">maximum Quantity: { product.maximumQuantity}</p>
               <p className="text-gray-600 mb-4">Category: {product.category}</p>
               <p className="text-gray-600 mb-4">
                 Subcategory: {product.subcategory}
