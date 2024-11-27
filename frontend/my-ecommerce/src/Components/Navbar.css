@@ -1,0 +1,307 @@
+/* Navbar styles */
+.navbar {
+  background-color: white;
+  color: #2b2222;
+  height: 60px;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  font-family: 'Helvetica Neue', sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-logo {
+  width: 100px;
+  height: 50px;
+  margin-right: 1rem;
+}
+
+.navbar-location {
+  position: relative;
+  margin-right: 1rem;
+  cursor: pointer;
+
+}
+
+.location-selector {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 0.5rem;
+  border-radius: 4px;
+  max-width: 200px;
+  gap: 5px;
+  justify-content: space-between;
+  transition: background-color 0.3s;
+}
+
+.location-selector:hover {
+  background-color: #e0e0e0;
+}
+
+.arrow-down {
+  margin-left: 0.5rem;
+}
+
+.location-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 150px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 2000;
+}
+
+.location-search-input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+.dropdown-header {
+  padding: 0.5rem;
+  font-weight: bold;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+
+.dropdown-item {
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dropdown-item:hover {
+  background-color: #e0e0e0;
+}
+
+.navbar-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  max-width: 600px;
+  height: 34px; /* Adjust icon size to match new button size */
+  margin-right: 0.5rem; 
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.navbar-search input {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  background-color: rgb(167, 163, 172);
+  color: rgb(0, 0, 0);
+}
+
+.navbar-search button {
+  background-color: #0066cc;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.navbar-search button:hover {
+  background-color: #0828cc;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+}
+
+.navbar-links button {
+  display: flex; /* Ensure the button's contents are flexible */
+  align-items: center; /* Center icon and text vertically */
+  margin: 0 10px; /* Equal spacing between buttons */
+  padding: 0.75rem 1.5rem; /* Increased padding for larger buttons */
+  font-size: 1rem; /* Adjust the font size if needed */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.navbar-heart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto; 
+  height: auto;  
+}
+
+.navbar-heart button {
+  width: 70px;  
+  height: 50px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;  
+  border: none;  
+  cursor: pointer;
+
+}
+
+.navbar-heart i {
+  font-size: 30px;  
+  color: #ff4d4d;
+}
+
+.navbar-heart span {
+  margin-left: 8px;
+  font-size: 8px; 
+}
+.navbar-heart button.active i {
+  color: #ff4d4d;  
+}
+
+.button-icon {
+  height: 24px;  
+  margin-right: 0.5rem;  
+}
+
+.signButton, .sellerButton, .orderButton {
+  background-color: #0c2ef1;
+  color: white;
+}
+
+.signButton:hover, .sellerButton:hover, .orderButton:hover {
+  background-color: #0828cc;
+}
+
+.navbar-cart {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 30px;
+}
+
+.navbar-cart img {
+  height: 24px;
+  margin-right: 0.5rem;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal > div {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 4px;
+  width: 400px;
+  position: relative;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  max-width: 90%;
+  position: relative;
+  animation: slide-down 0.3s ease-out;
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-content p {
+  text-align: center;
+  color: #ebe4e4;
+}
+
+.modal-content p button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.modal-content p button:hover {
+  color: #0056b3;
+}
+ 
+footer {
+  margin-top: 20px; /* Adds some space above the footer */
+  padding: 20px 0;  /* Adds some padding */
+  background-color: #333;
+  color: white;
+  text-align: center;
+}

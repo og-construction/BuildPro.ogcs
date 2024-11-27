@@ -1,0 +1,91 @@
+/* Container styling */
+.product-details-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+}
+
+.back-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+/* Header styling */
+.product-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.product-header h3 {
+    margin: 0;
+    font-size: 2rem;
+    color: #333;
+}
+
+.product-category {
+    color: #007BFF;
+    font-style: italic;
+}
+
+/* Content layout styling */
+.product-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.product-image {
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    text-align: center;
+}
+
+.product-image img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.product-info {
+    flex: 2;
+    padding: 10px;
+    line-height: 1.6;
+}
+
+.product-info p {
+    margin: 10px 0;
+    font-size: 1.1rem;
+}
+.approve-button, .reject-button {
+    padding: 8px 12px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.approve-button {
+    background-color: green;
+    color: white;
+}
+
+.reject-button {
+    background-color: red;
+    color: white;
+}
+

@@ -1,0 +1,101 @@
+/* Header.module.css*/
+.headerbody {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #2d3e50; /* Dark background */
+    color: #ffffff; /* White text */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 20px auto; /* Adds gap above and below */
+    width: 95%; /* Make header narrower than the page */
+    max-width: 1200px; /* Constrain maximum width */
+  }
+  
+  /* Header title styling */
+  .header h2 {
+    font-size: 24px;
+    margin: 0;
+    color: #ffffff; /* White text for contrast */
+  }
+  
+  /* Search input styling */
+  .header input[type="search"] {
+    padding: 8px 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    width: 250px; /* Adjust width */
+    margin-right: 20px; /* Space between input and icons */
+  }
+  
+  /* Icons container styling */
+  .icons {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Notification icon styling */
+  .notifications {
+    position: relative;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 20px; /* Space between notification and settings */
+  }
+  
+  /* Optional: Badge for notifications */
+  .notifications::after {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff6b6b;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+  
+  /* Settings icon styling */
+  .settings-icon {
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  /* Hover effects for icons */
+  .notifications:hover,
+  .settings-icon:hover {
+    color: #ff6b6b; /* Change color on hover */
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .header input[type="search"] {
+      width: 100%; /* Full width on smaller screens */
+      margin-bottom: 15px;
+    }
+  
+    .icons {
+      justify-content: flex-start;
+    }
+  
+    .notifications,
+    .settings-icon {
+      margin-right: 10px;
+    }
+  }
+  

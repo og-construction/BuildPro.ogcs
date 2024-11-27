@@ -1,0 +1,85 @@
+/* AddProductForm.module.css*/
+.addProductForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style for input and select fields */
+  .addProductForm input,
+  .addProductForm select {
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+  }
+  
+  /* Input fields' focus state */
+  .addProductForm input:focus,
+  .addProductForm select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  }
+  
+  /* Button style for form submission or other actions (if you add one) */
+  .addProductForm button {
+    padding: 12px 18px;
+    background-color: #e24b14;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .addProductForm button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Image upload field */
+  .addProductForm input[type="file"] {
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  /* Styling for Category/Subcategory display */
+  .addProductForm div {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .addProductForm div p {
+    margin: 5px 0;
+    font-weight: 500;
+  }
+  
+  /* General form heading */
+  .addProductForm h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  /* Label for the specifications section (if added later) */
+  .addProductForm h4 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  

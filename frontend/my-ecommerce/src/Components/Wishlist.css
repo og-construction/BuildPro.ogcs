@@ -1,0 +1,23 @@
+.navbar-heart {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.wishlist-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #ff4d4f; /* Red color for heart icon */
+  display: flex;
+  align-items: center;
+}
+
+.wishlist-button:hover {
+  color: #ff7875; /* Lighter red on hover */
+}
+
+.wishlist-button i {
+  margin-right: 5px; /* Add spacing between the icon and text */
+}
