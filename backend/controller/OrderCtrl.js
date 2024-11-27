@@ -5,17 +5,11 @@ const asyncHandler = require('express-async-handler');
 
 // Create an order
 const createOrder = asyncHandler(async (req, res) => {
-  const { items, paymentId, deliveryCharges = 0 } = req.body;
+  const { items, deliveryCharges = 0 } = req.body;
   const userId = req.user._id;
 
-  if (!items || !paymentId) {
-    return res.status(400).json({ message: 'Items and payment details are required' });
-  }
-
-  // Validate Payment
-  const payment = await Payment.findById(paymentId);
-  if (!payment || payment.paymentStatus !== 'Completed') {
-    return res.status(400).json({ message: 'Invalid or incomplete payment' });
+  if (!items || items.length === 0) {
+    return res.status(400).json({ message: "Items are required" });
   }
 
   // Calculate total amount
@@ -23,34 +17,32 @@ const createOrder = asyncHandler(async (req, res) => {
   for (const item of items) {
     const product = await Product.findById(item.product);
     if (!product || product.quantity < item.quantity) {
-      return res.status(400).json({ message: `Product not available or insufficient quantity: ${item.product}` });
+      return res.status(400).json({ message: `Product not available: ${item.product}` });
     }
     totalAmount += product.price * item.quantity;
-
-    // Update product stock
-    product.quantity -= item.quantity;
-    await product.save();
   }
 
-  // Add delivery charges to total amount
+  // Add delivery charges to the total amount
   totalAmount += deliveryCharges;
 
+  // Create the order with a 'Pending' status
   const newOrder = new Order({
     user: userId,
     items: items.map((item) => ({
       product: item.product,
       quantity: item.quantity,
-      price: item.price
+      price: item.price,
     })),
     totalAmount,
     deliveryCharges,
-    payment: paymentId
+    status: "Pending", // Order status is pending until payment is confirmed
   });
 
   await newOrder.save();
 
-  res.status(201).json({ message: 'Order created successfully', order: newOrder });
+  res.status(201).json({ message: "Order created successfully", orderId: newOrder._id });
 });
+
 
 // Get all orders for a user
 const getUserOrders = asyncHandler(async (req, res) => {

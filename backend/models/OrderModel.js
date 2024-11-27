@@ -11,7 +11,7 @@ const OrderSchema = new mongoose.Schema({
   ],
   totalAmount: { type: Number, required: true }, // Total order amount (including delivery charges)
   deliveryCharges: { type: Number, default: 0 }, // Delivery charges (optional)
-  payment: { type: mongoose.Schema.Types.ObjectId, ref: 'Payment', required: true },
+  payment: { type: mongoose.Schema.Types.ObjectId, ref: 'Payment',},
   status: { 
     type: String, 
     enum: ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'], 
